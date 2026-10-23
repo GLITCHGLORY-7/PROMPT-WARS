@@ -155,31 +155,70 @@ Tracks attendee arrivals and dietary restrictions against venue fire code capaci
 ## 🏗️ System Architecture
 
 ```mermaid
-flowchart TD
-    subgraph UI ["User Experience Layer"]
-        A["GenAI Creative Director Bar"] -->|Natural Language Prompt| B["Dynamic NLP Parser"]
-        NAV["Enterprise Left Sidebar"] -->|Section Toggles| VIEWS["Canvas Workspaces"]
-        LIMITS["Set Limits Modal"] -->|Ceiling & Capacity Adjustments| STATE["Central Reactive State Store"]
+graph TD
+    subgraph UI [User Experience Layer]
+        A[GenAI Creative Director Bar] -->|Natural Language Prompt| B[Dynamic NLP Parser]
+        NAV[Enterprise Left Sidebar] -->|Module Selection| VIEWS[Canvas Workspaces]
+        LIMITS[Set Limits Modal] -->|Ceiling & Capacity Adjustments| STATE[Central Reactive State Store]
     end
 
-    subgraph CORE ["Core Engine Layer"]
+    subgraph Core [Core Engine Layer]
         B -->|Extracts Budget, Heads, Decor| STATE
-        FOREX["Forex Currency Matrix<br>(INR ⇄ USD ⇄ EUR)"] <-->|Live Conversion Rate| STATE
-        REBALANCE["Proportional Rebalance Engine"] <-->|Calculates Exact Splits| STATE
+        FOREX[Multi-Currency Forex Matrix<br>INR / USD / EUR] ---|Live Conversion Rate| STATE
+        REBALANCE[Proportional Rebalance Engine] ---|Calculates Exact Splits| STATE
     end
 
-    subgraph MODULES ["Reactive Management Canvas"]
-        STATE --> M1["Theme & Aesthetic Studio"]
-        STATE --> M2["Budget Ledger & Chart.js"]
-        STATE --> M3["Reverse Milestone Roadmap"]
-        STATE --> M4["Supplier Matrix Hub"]
-        STATE --> M5["Guest RSVP & Dietary Tracker"]
+    subgraph Modules [Reactive Management Canvas]
+        STATE --> M1[Theme & Aesthetic Studio]
+        STATE --> M2[Budget Ledger & Chart.js]
+        STATE --> M3[Reverse Milestone Roadmap]
+        STATE --> M4[Supplier Matrix Hub]
+        STATE --> M5[Guest RSVP & Dietary Tracker]
     end
 
-    subgraph OUTPUT ["Output & Notification Layer"]
-        STATE --> TOAST["Top-Center Glass Pill Toast"]
-        STATE --> PRINT["Print / PDF Dossier Export"]
+    subgraph Output [Output & Notification Layer]
+        STATE --> TOAST[Top-Center Glass Pill Toast]
+        STATE --> PRINT[Print / PDF Dossier Export]
     end
+```
+
+### Visual Component Blueprint
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                        USER EXPERIENCE LAYER                           │
+│  ┌──────────────────────────┐         ┌─────────────────────────────┐  │
+│  │ GenAI Creative Director  │         │   Enterprise Left Sidebar   │  │
+│  │ (Natural Language Prompt)│         │     (Module Navigation)     │  │
+│  └─────────────┬────────────┘         └──────────────┬──────────────┘  │
+└────────────────┼─────────────────────────────────────┼─────────────────┘
+                 │ (Parses Budget, Capacity, Decor)    │ (Switches Canvas)
+                 ▼                                     ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                       CENTRAL REACTIVE STATE                           │
+│   • Hard Budget Ceiling & Limit Governance                             │
+│   • Multi-Currency Forex Matrix (INR ⇄ USD ⇄ EUR)                      │
+│   • Zero-Drift Proportional Rebalance Engine                           │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+         ┌─────────────────────────┼─────────────────────────┐
+         ▼                         ▼                         ▼
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│ Theme & Decor   │       │ Budget Ledger   │       │ Reverse Roadmap │
+│ • Chromatic Hex │       │ • Chart.js Live │       │ • Phased Stages │
+│ • Sonic & Attire│       │ • Velocity Burn │       │ • Task Checkbox │
+└─────────────────┘       └─────────────────┘       └─────────────────┘
+         │                         │                         │
+         └─────────────────────────┼─────────────────────────┘
+                                   │
+                                   ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                      OUTPUT & NOTIFICATION LAYER                       │
+│  ┌──────────────────────────┐         ┌─────────────────────────────┐  │
+│  │ Top-Center Floating Pill │         │ 1-Click Dossier PDF Export  │  │
+│  │ (Non-Intrusive Toasts)   │         │ (Executive Print Format)    │  │
+│  └──────────────────────────┘         └─────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
