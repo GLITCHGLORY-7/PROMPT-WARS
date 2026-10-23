@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CelebrateOS — Modern AI Celebration & Event Planner</title>
+  
+  <!-- Modern Event Tech Fonts: Plus Jakarta Sans & Playfair Display & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            void: "#08070F",
+            sidebar: "#0E0B1A",
+            surface: "#140F24",
+            panel: "#1A142E",
+            card: "#221A3B",
+            cardHover: "#2A2049",
+            brandViolet: {
+              DEFAULT: "#8B5CF6",
+              light: "#A78BFA",
+              dark: "#6D28D9"
+            },
+            partyPink: {
+              DEFAULT: "#EC4899",
+              light: "#F472B6",
+              dark: "#DB2777"
+            },
+            champagneGold: {
+              DEFAULT: "#F59E0B",
+              light: "#FCD34D",
+              dark: "#D97706"
+            },
+            mintEmerald: "#10B981"
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons & Chart.js -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background-color: #08070F;
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.10) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.06) 0%, transparent 50%);
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .panel-card {
+      background: rgba(26, 20, 46, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .panel-card:hover {
+      border-color: rgba(168, 85, 247, 0.4);
+      box-shadow: 0 12px 30px -5px rgba(139, 92, 246, 0.2);
+    }
+    .input-field {
+      background: rgba(14, 11, 26, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #F8FAFC;
+      transition: all 0.2s ease;
+    }
+    .input-field:focus {
+      border-color: #A855F7;
+      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.25);
+      outline: none;
+    }
+    .top-toast-anim {
+      animation: dropToast 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes dropToast {
+      from { transform: translate(-50%, -24px) scale(0.94); opacity: 0; }
+      to { transform: translate(-50%, 0) scale(1); opacity: 1; }
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #08070F; }
+    ::-webkit-scrollbar-thumb { background: #2E2452; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #443577; }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex bg-[#08070F] text-slate-100 selection:bg-purple-600 selection:text-white">
+
+  <!-- ================= TOP FLOATING CELEBRATION TOAST CONTAINER ================= -->
+  <!-- REPLACED UGLY POPUPS/BOTTOM CORNER BOXES WITH LUXURY TOP-CENTER PILL TOAST -->
+  <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none items-center"></div>
+
+  <!-- ================= LEFT FIXED CELEBRATION SIDEBAR ================= -->
+  <aside class="w-64 shrink-0 bg-[#0E0B1A] border-r border-white/10 flex flex-col justify-between h-full z-40 select-none shadow-2xl shadow-purple-950/40">
+    
+    <div class="space-y-4 p-4 lg:p-5">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-amber-400 p-[1.5px] shadow-lg shadow-purple-600/30 shrink-0">
+          <div class="w-full h-full bg-[#140F24] rounded-[14px] flex items-center justify-center">
+            <i data-lucide="sparkles" class="w-5 h-5 text-pink-300"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-base font-extrabold tracking-tight text-white font-serif">
+              Celebrate<span class="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">OS</span>
+            </h1>
+            <span class="text-[8px] font-bold px-1.5 py-0.2 rounded-full bg-pink-500/15 text-pink-300 border border-pink-500/30">
+              AI PRO
+            </span>
+          </div>
+          <p class="text-[10px] text-purple-300/60 font-medium">Partiful & Joy Aesthetic</p>
+        </div>
+      </div>
+
+      <!-- Active Master Event Card with One-Click Limit Edit -->
+      <div class="p-3.5 rounded-2xl bg-[#140F24] border border-purple-500/20 space-y-2 shadow-inner">
+        <div class="flex items-center justify-between text-[10px] uppercase font-bold text-purple-300 tracking-wider">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping"></span>
+            <span>Live Celebration</span>
+          </span>
+          <button onclick="openSetLimitModal()" class="text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/30 transition-all">
+            <i data-lucide="sliders" class="w-3 h-3"></i>
+            <span>Set Limits</span>
+          </button>
+        </div>
+        <div id="sideEventName" class="text-xs font-bold text-white truncate font-serif">Celestial Royal Wedding Gala</div>
+        <div class="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-white/10">
+          <div>
+            <span class="text-[9px] text-slate-400 block uppercase">Budget Limit</span>
+            <span id="sideBudgetCeiling" class="text-amber-300 font-bold">₹ 15,00,000</span>
+          </div>
+          <div class="text-right">
+            <span class="text-[9px] text-slate-400 block uppercase">Capacity</span>
+            <span id="sideGuestCount" class="text-pink-300 font-bold">200 Heads</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="space-y-1.5">
+        <div class="text-[10px] uppercase font-bold tracking-wider text-purple-300/50 px-3 pb-0.5">Planning Studio</div>
+
+        <button onclick="switchSection('theme')" id="nav-btn-theme" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600/30 to-pink-600/20 text-purple-200 border border-purple-500/40 shadow-sm transition-all text-left">
+          <i data-lucide="palette" class="w-4 h-4 text-pink-400"></i>
+          <span>1. Theme & Aesthetic Studio</span>
+        </button>
+
+        <button onclick="switchSection('budget')" id="nav-btn-budget" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+          <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
+          <span>2. Dynamic Budget & Limits</span>
+        </button>
+
+        <button onclick="switchSection('timeline')" id="nav-btn-timeline" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+          <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
+          <span>3. Milestone Countdown</span>
+        </button>
+
+        <button onclick="switchSection('vendors')" id="nav-btn-vendors" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+          <i data-lucide="briefcase" class="w-4 h-4 text-emerald-400"></i>
+          <span>4. Supplier Coordination</span>
+        </button>
+
+        <button onclick="switchSection('rsvp')" id="nav-btn-rsvp" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+          <i data-lucide="users" class="w-4 h-4 text-sky-400"></i>
+          <span>5. Guest Hospitality & RSVP</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="p-4 space-y-3 border-t border-white/10 bg-[#0A0713]">
+      <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+        <span class="font-medium text-[11px]">Active Currency</span>
+        <div class="flex items-center bg-black/60 rounded-xl border border-white/10 p-0.5">
+          <button onclick="setCurrency('₹')" id="curr-inr" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white">₹</button>
+          <button onclick="setCurrency('$')" id="curr-usd" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold text-slate-400 hover:text-white">$</button>
+          <button onclick="setCurrency('€')" id="curr-eur" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold text-slate-400 hover:text-white">€</button>
+        </div>
+      </div>
+
+      <button onclick="openSetLimitModal()" class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-all">
+        <i data-lucide="sliders" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span>Adjust Limits & Target</span>
+      </button>
+
+      <button onclick="window.print()" class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-90 text-white shadow-lg shadow-purple-600/30 transition-all">
+        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+        <span>Export Celebration Dossier</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ================= RIGHT MAIN WORKSPACE ================= -->
+  <div class="flex-1 flex flex-col h-full overflow-hidden">
+    
+    <!-- Top Header with Theme Switcher -->
+    <header class="h-16 shrink-0 bg-[#0E0B1A]/90 border-b border-white/10 px-6 flex items-center justify-between backdrop-blur-md">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h2 id="viewHeading" class="text-base lg:text-lg font-bold text-white font-serif">1. Theme & Aesthetic Studio</h2>
+          <span id="badgeArchetype" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-500/15 text-pink-300 border border-pink-500/30 font-sans tracking-wide">
+            WEDDING GALA
+          </span>
+        </div>
+        <p id="viewSubheading" class="text-[11px] text-purple-300/70">Creative direction, chromatic swatches, sonic atmosphere, and dress codes.</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-purple-200/60 font-semibold hidden lg:inline">Quick Vibe Switch:</span>
+        <div class="flex items-center gap-1.5">
+          <button onclick="generateWithAI('wedding')" id="arch-wedding" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-pink-600/30 text-pink-200 border border-pink-500/50">
+            👑 Wedding Gala
+          </button>
+          <button onclick="generateWithAI('birthday')" id="arch-birthday" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
+            🎂 Rooftop Party
+          </button>
+          <button onclick="generateWithAI('corporate')" id="arch-corporate" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
+            🏢 Tech Keynote
+          </button>
+          <button onclick="generateWithAI('community')" id="arch-community" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
+            🎪 Boho Carnival
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable Workspace Canvas -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+      <!-- ================= HERO COMPONENT: ULTRA-PROMINENT INLINE AI CREATIVE DIRECTOR ================= -->
+      <!-- FRONT & CENTER, GLOWING CELEBRATION VIBE COMPOSER -->
+      <section class="panel-card rounded-3xl p-5 border border-purple-500/30 bg-gradient-to-r from-purple-950/50 via-[#1A142E] to-pink-950/40 relative overflow-hidden space-y-3.5 shadow-xl shadow-purple-950/30">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 p-[1px] shadow-lg shadow-purple-500/20 shrink-0">
+              <div class="w-full h-full bg-[#16102B] rounded-[15px] flex items-center justify-center text-pink-300">
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-extrabold text-white tracking-wide font-serif">✦ GenAI Celebration Creative Director</span>
+                <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/40 font-bold">GEMINI 2.0 FLASH</span>
+              </div>
+              <p class="text-[11px] text-purple-200/80">Input your dream celebration vibe, budget, or theme to dynamically synthesize decor, music, budget splits, and timeline.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-emerald-400 font-mono text-[11px] font-semibold">AI Engine Active</span>
+          </div>
+        </div>
+
+        <!-- Inline Prompt Input Form -->
+        <form onsubmit="handleNaturalPrompt(event)" class="space-y-3">
+          <div class="flex flex-col sm:flex-row gap-2.5">
+            <div class="relative flex-1">
+              <i data-lucide="wand-2" class="w-4 h-4 absolute left-4 top-3.5 text-pink-400"></i>
+              <input 
+                id="aiPromptText" 
+                type="text" 
+                placeholder="e.g. 30th Rooftop Sunset Party for 75 friends with live DJ, neon aesthetics & craft cocktail bar, budget ₹3,50,000..." 
+                class="w-full pl-11 pr-4 py-3 rounded-2xl input-field text-xs text-white placeholder:text-purple-300/40 focus:outline-none border-purple-500/30"
+                required
+              />
+            </div>
+            <button 
+              type="submit" 
+              id="aiSubmitBtn"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-xs font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:to-pink-500 text-white shadow-lg shadow-purple-600/30 transition-all hover:scale-[1.01] active:scale-[0.98] shrink-0"
+            >
+              <i data-lucide="sparkles" class="w-4 h-4 text-pink-200"></i>
+              <span>Generate Celebration Plan</span>
+            </button>
+          </div>
+
+          <!-- Quick Interactive Prompt Chips -->
+          <div class="flex items-center gap-2 flex-wrap text-xs pt-0.5">
+            <span class="text-purple-300/60 text-[10px] uppercase font-bold tracking-wider">Trending Concepts:</span>
+            <button type="button" onclick="fillPrompt('Plan a 30th Rooftop Sunset Birthday for 80 guests with neon craft mixology, acoustic guitar & deep house DJ, budget ₹3,50,000')" class="px-3 py-1 rounded-xl bg-purple-900/30 hover:bg-purple-800/40 text-purple-200 border border-purple-500/20 text-[11px] transition-all">
+              🎂 30th Rooftop Disco (₹3.5L)
+            </button>
+            <button type="button" onclick="fillPrompt('Design a Royal Celestial Wedding Gala for 200 guests with wisteria chandeliers, live quartet, and 5-course banquet, budget ₹15,00,000')" class="px-3 py-1 rounded-xl bg-pink-900/30 hover:bg-pink-800/40 text-pink-200 border border-pink-500/20 text-[11px] transition-all">
+              👑 Royal Wedding Gala (₹15L)
+            </button>
+            <button type="button" onclick="fillPrompt('Organize an Apex Tech Innovation Summit for 150 executive delegates with holographic LED walls and awards dinner, budget ₹10,00,000')" class="px-3 py-1 rounded-xl bg-amber-900/30 hover:bg-amber-800/40 text-amber-200 border border-amber-500/20 text-[11px] transition-all">
+              🏢 Executive Tech Summit (₹10L)
+            </button>
+            <button type="button" onclick="fillPrompt('Plan an Eco-Friendly Cultural Community Carnival with 30 artisan food trucks and acoustic folk stage, budget ₹5,00,000')" class="px-3 py-1 rounded-xl bg-emerald-900/30 hover:bg-emerald-800/40 text-emerald-200 border border-emerald-500/20 text-[11px] transition-all">
+              🎪 Eco Cultural Carnival (₹5L)
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ================= SECTION 1: THEME & AESTHETIC STUDIO ================= -->
+      <section id="section-theme" class="space-y-6">
+        <div class="panel-card rounded-3xl p-6 border border-pink-500/30 bg-gradient-to-r from-purple-950/40 via-card to-pink-950/40 space-y-3 relative">
+          <div class="flex items-center justify-between">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-300"></i>
+              <span>Curated Creative Direction</span>
+            </div>
+            <button onclick="openSetLimitModal()" class="text-xs text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-400/10 border border-amber-400/20">
+              <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+              <span>Customize Limits</span>
+            </button>
+          </div>
+          <h3 id="themeName" class="text-2xl sm:text-3xl font-extrabold text-white font-serif">
+            Luminous Indigo & Champagne Silk
+          </h3>
+          <p id="themeVibe" class="text-purple-200/90 text-sm leading-relaxed max-w-3xl">
+            Opulent, romantic, timeless & cinematic. Cascading floral canopies with candlelit reflections and moonlit wisteria runners.
+          </p>
+        </div>
+
+        <!-- Color Swatches Grid -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i data-lucide="palette" class="w-4 h-4 text-pink-400"></i>
+              <span>Signature Chromatic Palette (Click swatch to copy HEX)</span>
+            </h4>
+          </div>
+          <div id="paletteGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          </div>
+        </div>
+
+        <!-- Decor, Sonic Atmosphere, Dress Code -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="panel-card rounded-2xl p-5 space-y-3 border border-purple-500/20">
+            <div class="flex items-center gap-2 text-pink-400 font-bold text-xs uppercase tracking-wider">
+              <i data-lucide="compass" class="w-4 h-4"></i>
+              <span>Decor & Scenography</span>
+            </div>
+            <p id="themeDecor" class="text-xs text-purple-100/80 leading-relaxed bg-black/40 p-4 rounded-xl border border-white/5">
+              Cascading wisteria archways, fairy-light canopies, mirrored runway aisle, candelabras.
+            </p>
+          </div>
+
+          <div class="panel-card rounded-2xl p-5 space-y-3 border border-purple-500/20">
+            <div class="flex items-center gap-2 text-purple-400 font-bold text-xs uppercase tracking-wider">
+              <i data-lucide="music" class="w-4 h-4"></i>
+              <span>Sonic Atmosphere & Playlist</span>
+            </div>
+            <p id="themeMusic" class="text-xs text-purple-100/80 leading-relaxed bg-black/40 p-4 rounded-xl border border-white/5">
+              Acoustic strings transitioning into deep jazz lounge, followed by celebratory orchestral pop crescendo.
+            </p>
+          </div>
+
+          <div class="panel-card rounded-2xl p-5 space-y-3 border border-purple-500/20">
+            <div class="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider">
+              <i data-lucide="shirt" class="w-4 h-4"></i>
+              <span>Guest Dress Code</span>
+            </div>
+            <p id="themeDress" class="text-xs text-purple-100/80 leading-relaxed bg-black/40 p-4 rounded-xl border border-white/5">
+              Black-Tie with jewel-tone royal accents (Deep amethyst, emerald or midnight navy).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 2: BUDGET & LIMIT GOVERNANCE ================= -->
+      <section id="section-budget" class="hidden space-y-6">
+        <!-- 4 Master KPI Cards with Direct Limit Editing -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div onclick="openSetLimitModal()" class="cursor-pointer panel-card rounded-2xl p-5 border border-amber-500/30 group hover:border-amber-400 transition-all bg-gradient-to-br from-amber-950/20 to-card">
+            <div class="flex items-center justify-between text-amber-300 text-xs font-bold uppercase tracking-wider">
+              <span>Hard Budget Ceiling</span>
+              <span class="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30 flex items-center gap-1">
+                <i data-lucide="edit-3" class="w-3 h-3"></i> Edit
+              </span>
+            </div>
+            <div id="kpiCeiling" class="text-2xl font-extrabold text-white font-mono mt-1.5">₹ 15,00,000</div>
+            <div class="text-[11px] text-amber-400/90 mt-1 flex items-center gap-1">
+              <span>Click to change ceiling limit</span>
+            </div>
+          </div>
+
+          <div class="panel-card rounded-2xl p-5 border border-purple-500/20">
+            <div class="text-xs font-bold text-purple-300 uppercase tracking-wider">Planned Allocations</div>
+            <div id="kpiAllocated" class="text-2xl font-extrabold text-pink-300 font-mono mt-1.5">₹ 15,00,000</div>
+            <div id="kpiAllocPct" class="text-[11px] text-purple-300/70 mt-1">100% of ceiling allocated</div>
+          </div>
+
+          <div class="panel-card rounded-2xl p-5 border border-purple-500/20">
+            <div class="text-xs font-bold text-purple-300 uppercase tracking-wider">Paid / Invoiced</div>
+            <div id="kpiSpent" class="text-2xl font-extrabold text-emerald-400 font-mono mt-1.5">₹ 3,25,000</div>
+            <div id="kpiSpentPct" class="text-[11px] text-emerald-300 font-mono mt-1">21.7% realized</div>
+          </div>
+
+          <div class="panel-card rounded-2xl p-5 border border-purple-500/20">
+            <div class="text-xs font-bold text-purple-300 uppercase tracking-wider">Uncommitted Reserve</div>
+            <div id="kpiRunway" class="text-2xl font-extrabold text-purple-200 font-mono mt-1.5">₹ 11,75,000</div>
+            <div class="text-[11px] text-purple-300/70 mt-1">Buffer & contingency margin</div>
+          </div>
+        </div>
+
+        <!-- Velocity & Chart.js Visualizer -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div class="lg:col-span-8 panel-card rounded-2xl p-5 border border-purple-500/20 space-y-4">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-white uppercase tracking-wider">Execution Velocity & Real-Time Burn</span>
+              <span id="burnLabel" class="font-mono text-purple-200 font-bold">₹ 3,25,000 / ₹ 15,00,000</span>
+            </div>
+            <div class="w-full h-4 rounded-full bg-slate-900 border border-white/10 overflow-hidden flex">
+              <div id="burnProgressBar" class="h-full rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-amber-400 transition-all duration-300" style="width: 21.7%"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 pt-1 text-xs">
+              <div class="p-3 rounded-xl bg-black/40 border border-white/5">
+                <span class="text-[10px] text-purple-300/60 uppercase font-semibold">Cost Per Attendee</span>
+                <div id="kpiUnitCost" class="text-sm font-bold text-white font-mono mt-0.5">₹ 7,500</div>
+              </div>
+              <div class="p-3 rounded-xl bg-black/40 border border-white/5">
+                <span class="text-[10px] text-purple-300/60 uppercase font-semibold">Budget Health</span>
+                <div class="text-xs font-bold text-emerald-400 mt-0.5 flex items-center gap-1">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Optimal & Balanced
+                </div>
+              </div>
+              <div class="p-3 rounded-xl bg-black/40 border border-white/5">
+                <span class="text-[10px] text-purple-300/60 uppercase font-semibold">Locked Buffer</span>
+                <div class="text-xs font-bold text-amber-300 font-mono mt-0.5">3% Reserved</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 panel-card rounded-2xl p-5 border border-purple-500/20 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-xs font-bold text-white">Expense Distribution</span>
+              <span class="text-[9px] font-mono text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded-full border border-pink-500/20">Chart.js Live</span>
+            </div>
+            <div class="relative h-36 flex items-center justify-center">
+              <canvas id="splitChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Ledger -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-bold text-white">Service Category Allocation & Expense Ledger</h3>
+              <p class="text-xs text-purple-300/70">Directly adjust planned budgets or record paid amounts in real time.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="autoRebalance()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-purple-200 border border-white/10 transition-all">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-pink-400"></i>
+                <span>Auto-Rebalance</span>
+              </button>
+              <button onclick="openAddCategoryModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white shadow-md shadow-purple-600/30">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Add Category</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-card rounded-2xl border border-white/10 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-[#120D22] text-purple-300 uppercase text-[10px] font-bold tracking-wider border-b border-white/10">
+                  <tr>
+                    <th class="py-3 px-4">Service Category & Scope</th>
+                    <th class="py-3 px-3 text-center">Share</th>
+                    <th class="py-3 px-3">Planned Budget</th>
+                    <th class="py-3 px-3">Actual Paid</th>
+                    <th class="py-3 px-3">Status</th>
+                    <th class="py-3 px-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="budgetTableBody" class="divide-y divide-white/5 font-sans">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 3: TIMELINE ROADMAP ================= -->
+      <section id="section-timeline" class="hidden space-y-6">
+        <div class="panel-card rounded-2xl p-5 border border-purple-500/20 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white font-serif">Reverse Countdown Execution Roadmap</h3>
+            <p class="text-xs text-purple-300/70">Master celebration timeline from concept & contracts to celebration day.</p>
+          </div>
+          <div class="text-right">
+            <div id="timelineCompletedText" class="text-lg font-mono font-bold text-white">1 / 6 Achieved</div>
+            <div class="text-[11px] text-pink-400 font-mono font-semibold">Milestone Velocity</div>
+          </div>
+        </div>
+
+        <form onsubmit="handleAddTask(event)" class="panel-card rounded-2xl p-4 border border-white/10 flex flex-col sm:flex-row gap-3">
+          <input id="inputNewTask" type="text" placeholder="Add custom action item (e.g. Schedule final floral tasting & walkthrough)..." class="flex-1 px-4 py-2.5 rounded-xl input-field text-xs text-white" required>
+          <select id="selectPhase" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
+            <option value="3 Months Out">3 Months Out</option>
+            <option value="1 Month Out">1 Month Out</option>
+            <option value="2 Weeks Out">2 Weeks Out</option>
+            <option value="48 Hours Out">48 Hours Out</option>
+            <option value="Day of Event">Day of Event</option>
+          </select>
+          <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white shrink-0 shadow-md">
+            Add Milestone
+          </button>
+        </form>
+
+        <div id="timelineContainer" class="space-y-3">
+        </div>
+      </section>
+
+      <!-- ================= SECTION 4: VENDOR HUB ================= -->
+      <section id="section-vendors" class="hidden space-y-6">
+        <div class="panel-card rounded-2xl p-5 border border-purple-500/20 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white font-serif">Vendor & Supplier Coordination Hub</h3>
+            <p class="text-xs text-purple-300/70">Contracting status pipeline, quotes, contacts, and delivery notes.</p>
+          </div>
+          <button onclick="openAddVendorModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white shadow-md">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            <span>Add Supplier</span>
+          </button>
+        </div>
+
+        <div id="vendorsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        </div>
+      </section>
+
+      <!-- ================= SECTION 5: GUEST RSVP ================= -->
+      <section id="section-rsvp" class="hidden space-y-6">
+        <div class="panel-card rounded-2xl p-5 border border-purple-500/20 flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white font-serif">Guest Hospitality & RSVP Management</h3>
+            <p class="text-xs text-purple-300/70">Track confirmed attendee counts against target venue capacity.</p>
+          </div>
+          <div class="flex items-center gap-4 text-xs font-mono">
+            <div><span class="text-slate-400">Confirmed:</span> <span id="rsvpConfirmedHeads" class="font-bold text-emerald-400">3</span></div>
+            <div><span class="text-slate-400">Venue Cap:</span> <span id="rsvpCapacityHeads" class="font-bold text-pink-300">200 Heads</span></div>
+          </div>
+        </div>
+
+        <form onsubmit="handleAddGuest(event)" class="panel-card rounded-2xl p-4 border border-white/10 grid grid-cols-1 md:grid-cols-4 gap-3">
+          <input id="inputGuestName" type="text" placeholder="Full Attendee Name *" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white" required>
+          <input id="inputGuestEmail" type="email" placeholder="Email Address" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
+          <select id="selectDietary" class="px-3 py-2.5 rounded-xl input-field text-xs text-white">
+            <option value="Standard">Dietary: Standard</option>
+            <option value="Vegetarian">Dietary: Vegetarian</option>
+            <option value="Vegan">Dietary: Vegan</option>
+            <option value="Gluten-Free">Dietary: Gluten-Free</option>
+            <option value="Halal">Dietary: Halal</option>
+          </select>
+          <button type="submit" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white">
+            Add Attendee
+          </button>
+        </form>
+
+        <div class="panel-card rounded-2xl border border-white/10 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#120D22] text-purple-300 uppercase text-[10px] font-bold tracking-wider border-b border-white/10">
+                <tr>
+                  <th class="py-3 px-4">Attendee Name</th>
+                  <th class="py-3 px-3">Contact</th>
+                  <th class="py-3 px-3">RSVP Status</th>
+                  <th class="py-3 px-3">Dietary</th>
+                  <th class="py-3 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="guestsTableBody" class="divide-y divide-white/5 font-sans">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= MODALS ================= -->
+  <!-- 1. SET LIMITS MODAL -->
+  <div id="setLimitModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="panel-card rounded-3xl p-6 w-full max-w-md border border-purple-500/40 space-y-4 bg-[#140F26] shadow-2xl shadow-purple-900/50">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="text-base font-bold text-white font-serif">Adjust Event Limits & Capacity</h3>
+          <p class="text-xs text-purple-300/70">Directly set hard budget ceiling & guest capacity.</p>
+        </div>
+        <button onclick="closeSetLimitModal()" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveLimits(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1">
+            Total Event Budget Limit (<span class="currSymbol">₹</span>)
+          </label>
+          <input id="inputLimitBudget" type="number" step="1000" class="w-full px-3.5 py-2.5 rounded-xl input-field text-sm font-mono text-amber-300 font-bold" required>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-pink-300 uppercase tracking-wider mb-1">
+            Target Guest Headcount (Capacity)
+          </label>
+          <input id="inputLimitGuests" type="number" min="1" class="w-full px-3.5 py-2.5 rounded-xl input-field text-sm font-mono text-pink-300 font-bold" required>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-purple-300 uppercase tracking-wider mb-1">
+            Event Title / Name
+          </label>
+          <input id="inputLimitTitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl input-field text-xs text-white" required>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-purple-300 uppercase tracking-wider mb-1">
+            Event Subtitle / Vibe
+          </label>
+          <input id="inputLimitSubtitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
+        </div>
+        <div class="flex justify-end gap-2.5 pt-3 border-t border-white/10">
+          <button type="button" onclick="closeSetLimitModal()" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white">Cancel</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white rounded-xl shadow-lg">Save Limits</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. ADD CATEGORY MODAL -->
+  <div id="addCategoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="panel-card rounded-3xl p-6 w-full max-w-md border border-purple-500/40 space-y-4 bg-[#140F26] shadow-2xl">
+      <div class="flex items-start justify-between">
+        <h4 class="text-sm font-bold text-white font-serif">Add Custom Service Category</h4>
+        <button onclick="closeAddCategoryModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="handleConfirmAddCategory(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Category Name</label>
+          <input id="inputCategoryName" type="text" placeholder="e.g. Mixology & Craft Cocktails" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white" required>
+        </div>
+        <div>
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Scope / Deliverables Note</label>
+          <input id="inputCategoryNotes" type="text" placeholder="e.g. Bespoke bar setup with 3 signature drinks" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Planned Allocation Amount (<span class="currSymbol">₹</span>)</label>
+          <input id="inputCategoryAmount" type="number" placeholder="50000" class="w-full px-3 py-2 rounded-xl input-field text-xs font-mono text-white" required>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
+          <button type="button" onclick="closeAddCategoryModal()" class="px-3 py-1.5 text-xs text-slate-400">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl">Add to Ledger</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. ADD VENDOR MODAL -->
+  <div id="addVendorModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="panel-card rounded-3xl p-6 w-full max-w-md border border-purple-500/40 space-y-4 bg-[#140F26] shadow-2xl">
+      <div class="flex items-start justify-between">
+        <h4 class="text-sm font-bold text-white font-serif">Add New Supplier / Vendor</h4>
+        <button onclick="closeAddVendorModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="handleConfirmAddVendor(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Supplier Company / Brand Name</label>
+          <input id="inputVendorName" type="text" placeholder="e.g. Prism Light & Sound Production" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white" required>
+        </div>
+        <div>
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Category</label>
+          <select id="selectVendorCategory" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white">
+            <option value="Venue">Venue</option>
+            <option value="Catering">Catering</option>
+            <option value="Decor">Decor</option>
+            <option value="Photography">Photography</option>
+            <option value="Music">Music & Entertainment</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Estimated Quote (<span class="currSymbol">₹</span>)</label>
+          <input id="inputVendorEstimate" type="number" placeholder="75000" class="w-full px-3 py-2 rounded-xl input-field text-xs font-mono text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Contact Email / Phone</label>
+          <input id="inputVendorContact" type="text" placeholder="concierge@supplier.com" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white">
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
+          <button type="button" onclick="closeAddVendorModal()" class="px-3 py-1.5 text-xs text-slate-400">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl">Save Supplier</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    let currentCurrency = '₹';
+    let chartInstance = null;
+
+    // TOP-CENTER CELEBRATION TOAST SYSTEM
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      
+      const icon = type === 'success' 
+        ? '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>'
+        : type === 'info'
+          ? '<i data-lucide="sparkles" class="w-4 h-4 text-pink-400 shrink-0"></i>'
+          : '<i data-lucide="alert-circle" class="w-4 h-4 text-amber-400 shrink-0"></i>';
+
+      const borderCol = type === 'success' ? 'border-emerald-500/40' : type === 'info' ? 'border-pink-500/40' : 'border-amber-500/40';
+
+      toast.className = `top-toast-anim pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#171129]/95 border ${borderCol} shadow-2xl shadow-purple-950/70 text-xs text-slate-100 backdrop-blur-xl max-w-md`;
+      toast.innerHTML = `${icon}<span class="font-medium tracking-wide">${message}</span>`;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.transition = 'all 0.35s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, -15px) scale(0.95)';
+        setTimeout(() => toast.remove(), 350);
+      }, 3500);
+    }
+
+    // CELEBRATION STATE INITIALIZATION
+    let state = {
+      title: "Celestial Royal Wedding Gala",
+      subtitle: "A regal, ethereal union enveloped in moonlit indigo and rose champagne radiance with 200 honored guests.",
+      totalBudget: 1500000,
+      guestCapacity: 200,
+      archetypeLabel: "WEDDING GALA",
+      theme: {
+        name: "Luminous Indigo & Champagne Silk",
+        vibe: "Opulent, romantic, timeless & cinematic with candlelit reflections and moonlit wisteria canopies.",
+        decorStyle: "Cascading wisteria archways, fairy-light canopies, mirrored runway aisle, candelabras.",
+        musicAtmosphere: "Acoustic strings transitioning into deep jazz lounge, followed by celebratory orchestral pop crescendo.",
+        dressCodePrompt: "Black-Tie with jewel-tone royal accents (Deep amethyst, emerald or midnight navy).",
+        colorPalette: [
+          { name: "Royal Velvet", hex: "#4C2EE4", role: "Primary draping & stage backdrops" },
+          { name: "Champagne Rose", hex: "#FB7185", role: "Floral runners & table linens" },
+          { name: "Amber Lumina", hex: "#F59E0B", role: "Chandeliers & stationery seals" },
+          { name: "Emerald Lumina", hex: "#10B981", role: "Botanical foliage & bouquets" },
+          { name: "Midnight Noir", hex: "#0E0B1A", role: "Tuxedo baseline & stage accents" }
+        ]
+      },
+      categories: [
+        { id: "c1", name: "Venue & Architectural Staging", share: 40, allocated: 600000, spent: 250000, notes: "Ballroom & bridal suite buyout" },
+        { id: "c2", name: "Gourmet Catering & Mixology", share: 28, allocated: 420000, spent: 0, notes: "5-course tasting & artisan cocktail bar" },
+        { id: "c3", name: "Floral, Lighting & Decor", share: 14, allocated: 210000, spent: 0, notes: "Live floral canopies & pin-spots" },
+        { id: "c4", name: "Cinematography & 35mm Film", share: 10, allocated: 150000, spent: 75000, notes: "Drone & editorial captures" },
+        { id: "c5", name: "Live Quartet & Sonic Audio", share: 5, allocated: 75000, spent: 0, notes: "Acoustic strings & 6-piece band" },
+        { id: "c6", name: "Emergency Contingency Reserve", share: 3, allocated: 45000, spent: 0, notes: "Unforeseen logistics reserve" }
+      ],
+      timeline: [
+        { id: "t1", phase: "3 Months Out", task: "Lock prime palace venue contract & sign master permits", completed: true },
+        { id: "t2", phase: "2 Months Out", task: "Curate chef tasting menu and confirm bespoke wine pairings", completed: false },
+        { id: "t3", phase: "1 Month Out", task: "Dispatch digital RSVP invitations with bespoke attire guide", completed: false },
+        { id: "t4", phase: "2 Weeks Out", task: "Finalize minute-by-minute order of events & sound checks", completed: false },
+        { id: "t5", phase: "48 Hours Out", task: "Walkthrough rehearsal dinner & vendor access permits", completed: false },
+        { id: "t6", phase: "Day of Event", task: "Morning bridal suite breakfast & champagne toast rollout", completed: false }
+      ],
+      vendors: [
+        { id: "v1", name: "Grand Palais Regency & Gardens", category: "Venue", status: "Booked", quote: 600000, contact: "concierge@grandpalais.luxury", notes: "Includes valet & security" },
+        { id: "v2", name: "Artisan Culinary Atelier", category: "Catering", status: "In Discussion", quote: 420000, contact: "events@ateliergastronomy.com", notes: "Chef tasting session pending" },
+        { id: "v3", name: "Velvet & Petal Floral Design", category: "Decor", status: "Not Started", quote: 210000, contact: "hello@velvetpetal.co", notes: "Floor plan submitted" },
+        { id: "v4", name: "Lumina Cinematic Studios", category: "Photography", status: "Booked", quote: 150000, contact: "studio@luminacinema.io", notes: "Contract signed, deposit paid" }
+      ],
+      guests: [
+        { id: "g1", name: "Alexander & Sophia Wright", email: "alex.wright@luxury.co", rsvp: "Confirmed", dietary: "Standard" },
+        { id: "g2", name: "Elena Rostova", email: "elena@vanguard.io", rsvp: "Confirmed", dietary: "Vegan" },
+        { id: "g3", name: "Marcus Sterling", email: "marcus@sterling.ch", rsvp: "Confirmed", dietary: "Gluten-Free" },
+        { id: "g4", name: "David Kim & Partner", email: "dkim@ventures.io", rsvp: "Pending", dietary: "Standard" },
+        { id: "g5", name: "Priya Sharma", email: "priya@designhouse.in", rsvp: "Pending", dietary: "Vegetarian" }
+      ]
+    };
+
+    // REAL-TIME MULTI-CURRENCY FOREX CONVERSION ENGINE
+    const RATES_TO_INR = {
+      '₹': 1,
+      '$': 83.5,   // 1 USD = ₹ 83.50
+      '€': 90.5    // 1 EUR = ₹ 90.50
+    };
+
+    function formatMoney(amount) {
+      const num = Number(amount) || 0;
+      const locale = currentCurrency === '₹' ? 'en-IN' : 'en-US';
+      return `${currentCurrency} ${num.toLocaleString(locale)}`;
+    }
+
+    function setCurrency(newCurr) {
+      if (newCurr === currentCurrency) return;
+      const oldCurr = currentCurrency;
+      
+      // Calculate exchange factor from old currency to new currency
+      const factor = RATES_TO_INR[oldCurr] / RATES_TO_INR[newCurr];
+      currentCurrency = newCurr;
+
+      // Convert all state monetary values using real market exchange rates
+      state.totalBudget = Math.max(1, Math.round(state.totalBudget * factor));
+      
+      let sumAlloc = 0;
+      state.categories.forEach(c => {
+        c.allocated = Math.round((c.allocated || 0) * factor);
+        c.spent = Math.round((c.spent || 0) * factor);
+        sumAlloc += c.allocated;
+      });
+      // Re-adjust any rounding fraction to ensure exact total match
+      const diff = state.totalBudget - sumAlloc;
+      if (state.categories.length > 0 && diff !== 0) {
+        state.categories[0].allocated += diff;
+      }
+
+      state.vendors.forEach(v => {
+        if (v.quote) v.quote = Math.round(v.quote * factor);
+      });
+
+      // Update UI labels and active state buttons
+      document.querySelectorAll('.currSymbol').forEach(el => el.textContent = newCurr);
+      ['inr', 'usd', 'eur'].forEach(k => {
+        const btn = document.getElementById(`curr-${k}`);
+        if (btn) {
+          if ((k === 'inr' && newCurr === '₹') || (k === 'usd' && newCurr === '$') || (k === 'eur' && newCurr === '€')) {
+            btn.className = "px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md";
+          } else {
+            btn.className = "px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold text-slate-400 hover:text-white";
+          }
+        }
+      });
+
+      renderAll();
+      showToast(`Forex converted: ${oldCurr} → ${newCurr} (${formatMoney(state.totalBudget)})`, "info");
+    }
+
+    function switchSection(sectionId) {
+      ['theme', 'budget', 'timeline', 'vendors', 'rsvp'].forEach(s => {
+        const el = document.getElementById(`section-${s}`);
+        const btn = document.getElementById(`nav-btn-${s}`);
+        if (el) {
+          if (s === sectionId) {
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        }
+        if (btn) {
+          if (s === sectionId) {
+            btn.className = "nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600/30 to-pink-600/20 text-purple-200 border border-purple-500/40 shadow-sm transition-all text-left";
+          } else {
+            btn.className = "nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left";
+          }
+        }
+      });
+
+      const headings = {
+        'theme': { title: "1. Theme & Aesthetic Studio", subtitle: "Creative direction, chromatic swatches, sonic atmosphere, and dress codes." },
+        'budget': { title: "2. Dynamic Budget & Cost Governance", subtitle: "Financial allocation, spend tracking, and velocity controls." },
+        'timeline': { title: "3. Reverse Countdown Execution Roadmap", subtitle: "Step-by-step master chronology from contracts to celebration." },
+        'vendors': { title: "4. Vendor Coordination & Contracting", subtitle: "Screening, proposals, deliverables, and quote amounts." },
+        'rsvp': { title: "5. Guest Hospitality & RSVP Management", subtitle: "Track confirmed attendee counts against target venue capacity." }
+      };
+
+      if (headings[sectionId]) {
+        document.getElementById('viewHeading').textContent = headings[sectionId].title;
+        document.getElementById('viewSubheading').textContent = headings[sectionId].subtitle;
+      }
+
+      if (sectionId === 'budget') {
+        setTimeout(renderChart, 50);
+      }
+    }
+
+    function renderAll() {
+      // Header and Side Elements
+      document.getElementById('sideEventName').textContent = state.title;
+      document.getElementById('sideBudgetCeiling').textContent = formatMoney(state.totalBudget);
+      document.getElementById('sideGuestCount').textContent = `${state.guestCapacity} Heads`;
+      document.getElementById('badgeArchetype').textContent = state.archetypeLabel;
+
+      // Theme Studio
+      document.getElementById('themeName').textContent = state.theme.name;
+      document.getElementById('themeVibe').textContent = state.theme.vibe;
+      document.getElementById('themeDecor').textContent = state.theme.decorStyle;
+      document.getElementById('themeMusic').textContent = state.theme.musicAtmosphere;
+      document.getElementById('themeDress').textContent = state.theme.dressCodePrompt;
+
+      // Render Chromatic Palette
+      const paletteGrid = document.getElementById('paletteGrid');
+      paletteGrid.innerHTML = state.theme.colorPalette.map(c => `
+        <div onclick="copyHex('${c.hex}')" class="group cursor-pointer p-3 rounded-2xl bg-black/40 border border-white/10 hover:border-pink-500/50 transition-all flex flex-col justify-between space-y-2">
+          <div class="h-16 w-full rounded-xl shadow-inner border border-white/10 transition-transform group-hover:scale-[1.02]" style="background-color: ${c.hex};"></div>
+          <div>
+            <div class="text-xs font-bold text-white truncate">${c.name}</div>
+            <div class="text-[10px] text-purple-300 font-mono">${c.hex}</div>
+            <div class="text-[10px] text-slate-400 truncate mt-0.5">${c.role}</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Budget Governance
+      const totalAllocated = state.categories.reduce((acc, c) => acc + (c.allocated || 0), 0);
+      const totalSpent = state.categories.reduce((acc, c) => acc + (c.spent || 0), 0);
+      const runway = state.totalBudget - totalSpent;
+      const allocPct = state.totalBudget > 0 ? Math.round((totalAllocated / state.totalBudget) * 100) : 0;
+      const spentPct = state.totalBudget > 0 ? ((totalSpent / state.totalBudget) * 100).toFixed(1) : 0;
+
+      document.getElementById('kpiCeiling').textContent = formatMoney(state.totalBudget);
+      document.getElementById('kpiAllocated').textContent = formatMoney(totalAllocated);
+      document.getElementById('kpiAllocPct').textContent = `${allocPct}% of ceiling allocated`;
+      document.getElementById('kpiSpent').textContent = formatMoney(totalSpent);
+      document.getElementById('kpiSpentPct').textContent = `${spentPct}% realized`;
+      document.getElementById('kpiRunway').textContent = formatMoney(runway);
+
+      document.getElementById('burnLabel').textContent = `${formatMoney(totalSpent)} / ${formatMoney(state.totalBudget)}`;
+      document.getElementById('burnProgressBar').style.width = `${Math.min(spentPct, 100)}%`;
+
+      const unitCost = state.guestCapacity > 0 ? Math.round(state.totalBudget / state.guestCapacity) : 0;
+      document.getElementById('kpiUnitCost').textContent = formatMoney(unitCost);
+
+      // Render Budget Table
+      const bTable = document.getElementById('budgetTableBody');
+      bTable.innerHTML = state.categories.map(cat => {
+        const spentRatio = cat.allocated > 0 ? Math.round((cat.spent / cat.allocated) * 100) : 0;
+        const statusBadge = spentRatio >= 100 
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">Fully Invoiced</span>`
+          : spentRatio > 0 
+            ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Partial (${spentRatio}%)</span>`
+            : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/20 text-slate-400 border border-slate-500/30">Open</span>`;
+
+        return `
+          <tr class="hover:bg-white/[0.03] transition-colors">
+            <td class="py-3 px-4">
+              <div class="font-bold text-white text-xs">${cat.name}</div>
+              <div class="text-[11px] text-purple-300/70">${cat.notes}</div>
+            </td>
+            <td class="py-3 px-3 text-center font-mono text-purple-300 font-bold">${cat.share}%</td>
+            <td class="py-3 px-3 font-mono font-bold text-white">
+              <input type="number" onchange="updateCatAlloc('${cat.id}', this.value)" value="${cat.allocated}" class="w-24 px-2 py-1 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-white text-right focus:border-purple-500">
+            </td>
+            <td class="py-3 px-3 font-mono font-bold text-emerald-400">
+              <input type="number" onchange="updateCatSpent('${cat.id}', this.value)" value="${cat.spent}" class="w-24 px-2 py-1 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-emerald-400 text-right focus:border-purple-500">
+            </td>
+            <td class="py-3 px-3">${statusBadge}</td>
+            <td class="py-3 px-3 text-right">
+              <button onclick="deleteCategory('${cat.id}')" class="text-rose-400 hover:text-rose-300 p-1 rounded-lg hover:bg-rose-500/10 transition-all">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Render Timeline
+      const completedTasks = state.timeline.filter(t => t.completed).length;
+      document.getElementById('timelineCompletedText').textContent = `${completedTasks} / ${state.timeline.length} Achieved`;
+
+      const tContainer = document.getElementById('timelineContainer');
+      tContainer.innerHTML = state.timeline.map(item => `
+        <div class="p-3.5 rounded-2xl panel-card border ${item.completed ? 'border-emerald-500/30 bg-emerald-950/10' : 'border-white/10'} flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <button onclick="toggleTask('${item.id}')" class="w-6 h-6 rounded-lg flex items-center justify-center border transition-all ${item.completed ? 'bg-emerald-500 border-emerald-400 text-white' : 'border-purple-400/40 hover:border-pink-400 text-transparent'}">
+              <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            </button>
+            <div>
+              <div class="text-xs font-semibold ${item.completed ? 'line-through text-slate-400' : 'text-white'}">${item.task}</div>
+              <div class="text-[10px] text-pink-300 font-mono uppercase tracking-wider">${item.phase}</div>
+            </div>
+          </div>
+          <button onclick="deleteTask('${item.id}')" class="text-slate-500 hover:text-rose-400 p-1">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+
+      // Render Vendors
+      const vGrid = document.getElementById('vendorsGrid');
+      vGrid.innerHTML = state.vendors.map(v => {
+        const statusColors = {
+          'Not Started': 'bg-slate-500/15 text-slate-400 border-slate-500/30',
+          'In Discussion': 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+          'Booked': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+          'Paid': 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+        };
+
+        return `
+          <div class="panel-card rounded-2xl p-5 border border-purple-500/20 space-y-3 flex flex-col justify-between">
+            <div class="space-y-1.5">
+              <div class="flex items-start justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300/60">${v.category}</span>
+                <select onchange="updateVendorStatus('${v.id}', this.value)" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusColors[v.status] || ''} bg-black/40 focus:outline-none">
+                  <option value="Not Started" ${v.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
+                  <option value="In Discussion" ${v.status === 'In Discussion' ? 'selected' : ''}>In Discussion</option>
+                  <option value="Booked" ${v.status === 'Booked' ? 'selected' : ''}>Booked</option>
+                  <option value="Paid" ${v.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                </select>
+              </div>
+              <h4 class="text-sm font-bold text-white font-serif">${v.name}</h4>
+              <p class="text-xs text-purple-200/70">${v.notes}</p>
+            </div>
+            
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+              <div>
+                <span class="text-[10px] text-slate-400 block">Quote</span>
+                <span class="font-mono font-bold text-white">${formatMoney(v.quote)}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <a href="mailto:${v.contact}" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-purple-300 transition-all">
+                  <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                </a>
+                <button onclick="deleteVendor('${v.id}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-all">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render RSVP
+      const confirmedGuests = state.guests.filter(g => g.rsvp === 'Confirmed').length;
+      document.getElementById('rsvpConfirmedHeads').textContent = `${confirmedGuests} Confirmed`;
+      document.getElementById('rsvpCapacityHeads').textContent = `${state.guestCapacity} Heads`;
+
+      const gTable = document.getElementById('guestsTableBody');
+      gTable.innerHTML = state.guests.map(g => {
+        const rBadge = g.rsvp === 'Confirmed'
+          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+          : g.rsvp === 'Declined'
+            ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+            : 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+
+        return `
+          <tr class="hover:bg-white/[0.03] transition-colors">
+            <td class="py-3 px-4 font-bold text-white text-xs">${g.name}</td>
+            <td class="py-3 px-3 text-purple-300/70 font-mono text-[11px]">${g.email}</td>
+            <td class="py-3 px-3">
+              <select onchange="updateGuestRsvp('${g.id}', this.value)" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${rBadge} bg-black/40 focus:outline-none">
+                <option value="Confirmed" ${g.rsvp === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                <option value="Pending" ${g.rsvp === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option value="Declined" ${g.rsvp === 'Declined' ? 'selected' : ''}>Declined</option>
+              </select>
+            </td>
+            <td class="py-3 px-3">
+              <span class="text-[11px] px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300">${g.dietary}</span>
+            </td>
+            <td class="py-3 px-3 text-right">
+              <button onclick="deleteGuest('${g.id}')" class="text-rose-400 hover:text-rose-300 p-1">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      renderChart();
+      lucide.createIcons();
+    }
+
+    function renderChart() {
+      const canvas = document.getElementById('splitChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      const labels = state.categories.map(c => c.name);
+      const data = state.categories.map(c => c.allocated);
+      const colors = ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#38BDF8', '#6366F1', '#A855F7'];
+
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: colors.slice(0, labels.length),
+            borderWidth: 2,
+            borderColor: '#140F24'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return ` ${ctx.label}: ${formatMoney(ctx.raw)}`;
+                }
+              }
+            }
+          },
+          cutout: '72%'
+        }
+      });
+    }
+
+    // LIMITS MODAL HANDLERS
+    function openSetLimitModal() {
+      document.getElementById('inputLimitBudget').value = state.totalBudget;
+      document.getElementById('inputLimitGuests').value = state.guestCapacity;
+      document.getElementById('inputLimitTitle').value = state.title;
+      document.getElementById('inputLimitSubtitle').value = state.subtitle;
+      document.getElementById('setLimitModal').classList.remove('hidden');
+    }
+
+    function closeSetLimitModal() {
+      document.getElementById('setLimitModal').classList.add('hidden');
+    }
+
+    function handleSaveLimits(e) {
+      e.preventDefault();
+      const newBudget = Number(document.getElementById('inputLimitBudget').value);
+      const newGuests = Number(document.getElementById('inputLimitGuests').value);
+      const newTitle = document.getElementById('inputLimitTitle').value.trim();
+      const newSubtitle = document.getElementById('inputLimitSubtitle').value.trim();
+
+      if (newBudget > 0) state.totalBudget = newBudget;
+      if (newGuests > 0) state.guestCapacity = newGuests;
+      if (newTitle) state.title = newTitle;
+      if (newSubtitle) state.subtitle = newSubtitle;
+
+      // Proportionally scale categories
+      const currentTotalAlloc = state.categories.reduce((a, b) => a + b.allocated, 0);
+      if (currentTotalAlloc > 0) {
+        state.categories.forEach(c => {
+          c.allocated = Math.round((c.share / 100) * state.totalBudget);
+        });
+      }
+
+      closeSetLimitModal();
+      renderAll();
+      showToast(`Celebration Limits Saved: ${formatMoney(state.totalBudget)} for ${state.guestCapacity} guests.`, "success");
+    }
+
+    // AUTO REBALANCE
+    function autoRebalance() {
+      const n = state.categories.length;
+      if (n === 0) return;
+      const equalShare = Math.floor(100 / n);
+      const remainder = 100 - (equalShare * n);
+
+      let sumAlloc = 0;
+      state.categories.forEach((c, idx) => {
+        c.share = equalShare + (idx === 0 ? remainder : 0);
+        c.allocated = Math.round((c.share / 100) * state.totalBudget);
+        sumAlloc += c.allocated;
+      });
+
+      const diff = state.totalBudget - sumAlloc;
+      if (state.categories.length > 0 && diff !== 0) {
+        state.categories[0].allocated += diff;
+      }
+
+      renderAll();
+      showToast("Budget splits proportionally re-balanced across all categories.", "info");
+    }
+
+    // NATURAL PROMPT AI SYNTHESIS WITH DYNAMIC ATTRIBUTE EXTRACTION
+    function fillPrompt(text) {
+      document.getElementById('aiPromptText').value = text;
+      handleNaturalPrompt({ preventDefault: () => {} });
+    }
+
+    function parseNaturalLanguagePrompt(text) {
+      let budget = null;
+      let capacity = null;
+      let title = '';
+      let decor = '';
+      let detectedCurrency = null;
+
+      // Currency Detection
+      if (text.includes('$')) detectedCurrency = '$';
+      else if (text.includes('€')) detectedCurrency = '€';
+      else if (text.includes('₹') || text.match(/\b(inr|rupees?|lakhs?|lakh|cr)\b/i)) detectedCurrency = '₹';
+
+      // 1. Explicit Budget Extraction (supports e.g. 'budget 10,00,002', 'budget: ₹10,00,002', '$5,000', '€4,500', '10L', '15 Lakhs', '3.5L', '50k')
+      const bMatch = text.match(/(?:budget|cost|ceiling)\s*[:=\s]*[₹$€]?\s*([0-9]{1,3}(?:,[0-9]{2,3})+|[0-9]+(?:\.[0-9]+)?)\s*(lakhs?|lakh?|l|cr|crore|k)?/i) 
+                  || text.match(/[₹$€]\s*([0-9]{1,3}(?:,[0-9]{2,3})+|[0-9]+(?:\.[0-9]+)?)\s*(lakhs?|lakh?|l|cr|crore|k)?/i)
+                  || text.match(/\b([0-9]+(?:\.[0-9]+)?)\s*(lakhs?|lakh|l|cr|crore)\b/i);
+
+      if (bMatch) {
+        let rawNum = bMatch[1].replace(/,/g, '');
+        let mult = 1;
+        const unit = (bMatch[2] || '').toLowerCase();
+        if (unit === 'l' || unit === 'lakh' || unit === 'lakhs') mult = 100000;
+        else if (unit === 'cr' || unit === 'crore') mult = 10000000;
+        else if (unit === 'k') mult = 1000;
+        budget = Math.round(parseFloat(rawNum) * mult);
+      }
+
+      // 2. Headcount Capacity Extraction (supports e.g. 'for 157 executive delegates', '157 delegates', '80 guests', '200 people')
+      const cMatch = text.match(/(?:for\s+)?([0-9,]+)\s*(?:executive\s+|honored\s+|vip\s+)?(delegates|guests|people|heads|attendees|friends|members|persons)/i);
+      if (cMatch) {
+        capacity = parseInt(cMatch[1].replace(/,/g, ''), 10);
+      }
+
+      // 3. Decor & Feature Extraction (supports 'with holographic LED walls and awards dinner')
+      const dMatch = text.match(/\bwith\s+([^,]+)(?:,\s*budget|\.|$)/i);
+      if (dMatch && dMatch[1]) {
+        decor = dMatch[1].trim();
+        decor = decor.charAt(0).toUpperCase() + decor.slice(1);
+      }
+
+      // 4. Custom Event Title Extraction
+      let cleaned = text.replace(/^(organize|plan|design|create|host|setup|build)\s+(?:an?\s+)?/i, '').trim();
+      const titlePart = cleaned.split(/(?:\s+for\s+|\s+with\s+|\s+budget\s*[:=]?|\s*,\s*budget)/i)[0].trim();
+      if (titlePart.length > 3) {
+        title = titlePart.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+
+      return { budget, capacity, title, decor, detectedCurrency };
+    }
+
+    function handleNaturalPrompt(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const input = document.getElementById('aiPromptText');
+      const rawText = input.value.trim();
+      if (!rawText) return;
+
+      const submitBtn = document.getElementById('aiSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-pink-200"></i><span>Synthesizing...</span>`;
+      lucide.createIcons();
+
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4 text-pink-200"></i><span>Generate Celebration Plan</span>`;
+        lucide.createIcons();
+
+        // Parse user requirements dynamically
+        const parsed = parseNaturalLanguagePrompt(rawText);
+        if (parsed.detectedCurrency && parsed.detectedCurrency !== currentCurrency) {
+          setCurrency(parsed.detectedCurrency);
+        }
+
+        const lower = rawText.toLowerCase();
+
+        let eventType = 'wedding';
+        if (lower.includes("summit") || lower.includes("tech") || lower.includes("corporate") || lower.includes("conference") || lower.includes("keynote")) {
+          eventType = 'corporate';
+        } else if (lower.includes("birthday") || lower.includes("rooftop") || lower.includes("disco") || lower.includes("party")) {
+          eventType = 'birthday';
+        } else if (lower.includes("carnival") || lower.includes("festival") || lower.includes("eco") || lower.includes("community")) {
+          eventType = 'community';
+        }
+
+        // Generate with the user's exact parsed requirements
+        generateWithAI(eventType, parsed);
+
+        showToast(`✦ AI Synthesized: "${state.title}" — Budget: ${formatMoney(state.totalBudget)}, ${state.guestCapacity} Heads`, "success");
+      }, 650);
+    }
+
+    // ARCHETYPE GENERATION (SUPPORTS CUSTOM OVERRIDES FROM NATURAL LANGUAGE)
+    function generateWithAI(type, customOverrides = null) {
+      ['wedding', 'birthday', 'corporate', 'community'].forEach(k => {
+        const b = document.getElementById(`arch-${k}`);
+        if (b) {
+          if (k === type) {
+            b.className = "px-2.5 py-1.5 rounded-xl text-xs font-bold bg-pink-600/30 text-pink-200 border border-pink-500/50";
+          } else {
+            b.className = "px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white";
+          }
+        }
+      });
+
+      if (type === 'birthday') {
+        state.title = "Neon Skyline Rooftop 30th Birthday";
+        state.subtitle = "High-energy sunset celebration with craft mixology, velvet lounge pods & deep house sound.";
+        state.totalBudget = 350000;
+        state.guestCapacity = 75;
+        state.archetypeLabel = "ROOFTOP PARTY";
+        state.theme = {
+          name: "Sunset Magenta & Ultraviolet Disco",
+          vibe: "Euphoric, chic, vibrant, stylish & electric sunset energy.",
+          decorStyle: "Custom neon sign art, acrylic bar pedestals, iridescent backdrops, velvet floor cushions.",
+          musicAtmosphere: "Sunset tropical house transitioning into late-night deep tech & indie disco.",
+          dressCodePrompt: "Cocktail Chic with metallic or neon pop accents (Silk shirts, slip dresses).",
+          colorPalette: [
+            { name: "Sunset Magenta", hex: "#EC4899", role: "Neon signage & cocktail glow" },
+            { name: "Ultraviolet", hex: "#8B5CF6", role: "Atmospheric wash lighting" },
+            { name: "Amber Sunburst", hex: "#F59E0B", role: "Bar accents & sparklers" },
+            { name: "Electric Cyan", hex: "#06B6D4", role: "Menu cards & wristbands" },
+            { name: "Deep Amethyst", hex: "#1A102F", role: "Lounge furniture bases" }
+          ]
+        };
+        state.categories = [
+          { id: "c1", name: "Rooftop Lounge Buyout", share: 35, allocated: 122500, spent: 50000, notes: "Private terrace & security" },
+          { id: "c2", name: "Cocktail Mixology & Sliders", share: 30, allocated: 105000, spent: 0, notes: "Open bar & passed canapés" },
+          { id: "c3", name: "DJ Console & Sound Array", share: 18, allocated: 63000, spent: 0, notes: "Pioneer DJ deck & lights" },
+          { id: "c4", name: "Neon Decor & Photo Studio", share: 12, allocated: 42000, spent: 20000, notes: "Custom LED name sign" },
+          { id: "c5", name: "Contingency Reserve", share: 5, allocated: 17500, spent: 0, notes: "Late night extension" }
+        ];
+        state.timeline = [
+          { id: "t1", phase: "4 Weeks Out", task: "Book rooftop terrace & confirm sound permits", completed: true },
+          { id: "t2", phase: "2 Weeks Out", task: "Finalize signature 3-cocktail drink menu with lead mixologist", completed: false },
+          { id: "t3", phase: "1 Week Out", task: "Lock guest RSVP list & dispatch QR entry codes", completed: false },
+          { id: "t4", phase: "Day of Event", task: "Soundcheck DJ consoles & light sunset neon fixtures", completed: false }
+        ];
+        state.vendors = [
+          { id: "v1", name: "Skyline Altitude Lounge", category: "Venue", status: "Booked", quote: 122500, contact: "events@skylinebar.com", notes: "Includes private bartender" },
+          { id: "v2", name: "SonicGroove DJ Agency", category: "Music", status: "Booked", quote: 63000, contact: "booking@sonicgroove.live", notes: "Sunset set scheduled" }
+        ];
+      } else if (type === 'corporate') {
+        state.title = "Apex Tech Keynote & Gala Summit";
+        state.subtitle = "Executive innovation conference followed by awards banquet and networking lounge for 150 leaders.";
+        state.totalBudget = 1000000;
+        state.guestCapacity = 150;
+        state.archetypeLabel = "TECH SUMMIT";
+        state.theme = {
+          name: "Cyber Violet & Platinum Lumina",
+          vibe: "Futuristic, sophisticated, commanding & visionary with ultra-crisp optics.",
+          decorStyle: "Curved LED presentation walls, brushed titanium accents, linear ambient lighting.",
+          musicAtmosphere: "Modern ambient electronic, cinematic downtempo build-ups for keynote intros.",
+          dressCodePrompt: "Business Formal / Smart Tech Minimalist.",
+          colorPalette: [
+            { name: "Electric Violet", hex: "#7C3AED", role: "Keynote LED accents & badges" },
+            { name: "Cyan Lumina", hex: "#06B6D4", role: "Stage lighting & digital screens" },
+            { name: "Platinum Slate", hex: "#E2E8F0", role: "Podium & executive collateral" },
+            { name: "Midnight Void", hex: "#0B0914", role: "Auditorium backdrop" }
+          ]
+        };
+        state.categories = [
+          { id: "c1", name: "Convention Hall & AV Rigging", share: 45, allocated: 450000, spent: 200000, notes: "LED wall & wireless mics" },
+          { id: "c2", name: "Executive Banquet & Coffee Bar", share: 30, allocated: 300000, spent: 0, notes: "Buffet & espresso lounge" },
+          { id: "c3", name: "Keynote Speakers & Production", share: 15, allocated: 150000, spent: 50000, notes: "Honorarium & travel" },
+          { id: "c4", name: "Swag Bags & RFID Badges", share: 10, allocated: 100000, spent: 0, notes: "Eco-friendly delegate kit" }
+        ];
+        state.timeline = [
+          { id: "t1", phase: "2 Months Out", task: "Lock keynote speakers & execute non-disclosure riders", completed: true },
+          { id: "t2", phase: "1 Month Out", task: "Review AV presentation decks with production team", completed: false }
+        ];
+        state.vendors = [
+          { id: "v1", name: "Grand Convention Center", category: "Venue", status: "Booked", quote: 450000, contact: "booking@grandcenter.org", notes: "Main hall + 2 breakout suites" }
+        ];
+      } else if (type === 'community') {
+        state.title = "Harmony Eco-Carnival & Festival";
+        state.subtitle = "A vibrant, open-air celebration uniting artisan crafts, food trucks & indie music for 300 guests.";
+        state.totalBudget = 500000;
+        state.guestCapacity = 300;
+        state.archetypeLabel = "ECO CARNIVAL";
+        state.theme = {
+          name: "Bohemian Emerald & Sunburst Amber",
+          vibe: "Warm, inclusive, joyous & celebratory with festival energy.",
+          decorStyle: "Festoon string bulbs overhead, upcycled wood kiosks, botanical installations.",
+          musicAtmosphere: "Folk fusion, acoustic indie ensembles, and lively brass parade.",
+          dressCodePrompt: "Festive Bohemian / Comfortable Colorful Casual.",
+          colorPalette: [
+            { name: "Forest Emerald", hex: "#10B981", role: "Eco-canopies" },
+            { name: "Sunburst Amber", hex: "#F59E0B", role: "Ribbons & festive flags" },
+            { name: "Warm Rose", hex: "#FB7185", role: "Artisan crafts & florals" },
+            { name: "Linen Cream", hex: "#FEF3C7", role: "Cotton banners" }
+          ]
+        };
+        state.categories = [
+          { id: "c1", name: "Open Park & Municipal Permits", share: 30, allocated: 150000, spent: 0, notes: "City council park clearance" },
+          { id: "c2", name: "Acoustic Stages & Sound Array", share: 30, allocated: 150000, spent: 0, notes: "Solar powered audio" },
+          { id: "c3", name: "Artisan Canopies & Stalls", share: 25, allocated: 125000, spent: 0, notes: "30 bamboo stall booths" },
+          { id: "c4", name: "Eco Sanitation & First Aid", share: 15, allocated: 75000, spent: 0, notes: "Zero-waste sorting squad" }
+        ];
+        state.timeline = [
+          { id: "t1", phase: "6 Weeks Out", task: "Submit municipal public gathering permits", completed: false },
+          { id: "t2", phase: "3 Weeks Out", task: "Curate 30 food truck & craft vendor stall allotments", completed: false }
+        ];
+        state.vendors = [
+          { id: "v1", name: "City Parks & Recreation", category: "Venue", status: "Booked", quote: 150000, contact: "parks@citygov.org", notes: "Permit granted" }
+        ];
+      } else {
+        // Wedding
+        state.title = "Celestial Royal Wedding Gala";
+        state.subtitle = "A regal, ethereal union enveloped in moonlit indigo and rose champagne radiance with 200 honored guests.";
+        state.totalBudget = 1500000;
+        state.guestCapacity = 200;
+        state.archetypeLabel = "WEDDING GALA";
+        state.theme = {
+          name: "Luminous Indigo & Champagne Silk",
+          vibe: "Opulent, romantic, timeless & cinematic with candlelit reflections.",
+          decorStyle: "Cascading wisteria archways, fairy-light canopies, mirrored runway aisle, candelabras.",
+          musicAtmosphere: "Acoustic strings transitioning into deep jazz lounge, followed by celebratory orchestral pop crescendo.",
+          dressCodePrompt: "Black-Tie with jewel-tone royal accents (Deep amethyst, emerald or midnight navy).",
+          colorPalette: [
+            { name: "Royal Velvet", hex: "#4C2EE4", role: "Primary draping & stage backdrops" },
+            { name: "Champagne Rose", hex: "#FB7185", role: "Floral runners & table linens" },
+            { name: "Amber Lumina", hex: "#F59E0B", role: "Chandeliers & stationery seals" },
+            { name: "Emerald Lumina", hex: "#10B981", role: "Botanical foliage & bouquets" },
+            { name: "Midnight Noir", hex: "#0E0B1A", role: "Tuxedo baseline & stage accents" }
+          ]
+        };
+        state.categories = [
+          { id: "c1", name: "Venue & Architectural Staging", share: 40, allocated: 600000, spent: 250000, notes: "Ballroom & bridal suite buyout" },
+          { id: "c2", name: "Gourmet Catering & Mixology", share: 28, allocated: 420000, spent: 0, notes: "5-course tasting & artisan cocktail bar" },
+          { id: "c3", name: "Floral, Lighting & Decor", share: 14, allocated: 210000, spent: 0, notes: "Live floral canopies & pin-spots" },
+          { id: "c4", name: "Cinematography & 35mm Film", share: 10, allocated: 150000, spent: 75000, notes: "Drone & editorial captures" },
+          { id: "c5", name: "Live Quartet & Sonic Audio", share: 5, allocated: 75000, spent: 0, notes: "Acoustic strings & 6-piece band" },
+          { id: "c6", name: "Emergency Contingency Reserve", share: 3, allocated: 45000, spent: 0, notes: "Unforeseen logistics reserve" }
+        ];
+        state.timeline = [
+          { id: "t1", phase: "3 Months Out", task: "Lock prime palace venue contract & sign master permits", completed: true },
+          { id: "t2", phase: "2 Months Out", task: "Curate chef tasting menu and confirm bespoke wine pairings", completed: false },
+          { id: "t3", phase: "1 Month Out", task: "Dispatch digital RSVP invitations with bespoke attire guide", completed: false },
+          { id: "t4", phase: "2 Weeks Out", task: "Finalize minute-by-minute order of events & sound checks", completed: false },
+          { id: "t5", phase: "48 Hours Out", task: "Walkthrough rehearsal dinner & vendor access permits", completed: false },
+          { id: "t6", phase: "Day of Event", task: "Morning bridal suite breakfast & champagne toast rollout", completed: false }
+        ];
+        state.vendors = [
+          { id: "v1", name: "Grand Palais Regency & Gardens", category: "Venue", status: "Booked", quote: 600000, contact: "concierge@grandpalais.luxury", notes: "Includes valet & security" },
+          { id: "v2", name: "Artisan Culinary Atelier", category: "Catering", status: "In Discussion", quote: 420000, contact: "events@ateliergastronomy.com", notes: "Chef tasting session pending" },
+          { id: "v3", name: "Velvet & Petal Floral Design", category: "Decor", status: "Not Started", quote: 210000, contact: "hello@velvetpetal.co", notes: "Floor plan submitted" },
+          { id: "v4", name: "Lumina Cinematic Studios", category: "Photography", status: "Booked", quote: 150000, contact: "studio@luminacinema.io", notes: "Contract signed, deposit paid" }
+        ];
+      }
+
+      // If active currency is not INR and no custom budget override was provided, scale base preset to active currency
+      if (currentCurrency !== '₹' && (!customOverrides || !customOverrides.budget)) {
+        state.totalBudget = Math.max(1, Math.round(state.totalBudget / RATES_TO_INR[currentCurrency]));
+        let sumAlloc = 0;
+        state.categories.forEach(c => {
+          c.allocated = Math.round((c.share / 100) * state.totalBudget);
+          c.spent = Math.round((c.spent || 0) / RATES_TO_INR[currentCurrency]);
+          sumAlloc += c.allocated;
+        });
+        const diff = state.totalBudget - sumAlloc;
+        if (state.categories.length > 0 && diff !== 0) {
+          state.categories[0].allocated += diff;
+        }
+        state.vendors.forEach(v => {
+          if (v.quote) v.quote = Math.round(v.quote / RATES_TO_INR[currentCurrency]);
+        });
+      }
+
+      // Apply dynamic natural language overrides (exact budget, custom capacity, title, decor)
+      if (customOverrides) {
+        if (customOverrides.budget && customOverrides.budget > 0) {
+          state.totalBudget = customOverrides.budget;
+        }
+        if (customOverrides.capacity && customOverrides.capacity > 0) {
+          state.guestCapacity = customOverrides.capacity;
+        }
+        if (customOverrides.title && customOverrides.title.length > 2) {
+          state.title = customOverrides.title;
+        }
+        if (customOverrides.decor && customOverrides.decor.length > 2) {
+          state.theme.decorStyle = customOverrides.decor + ", customized with atmospheric lighting and bespoke installations.";
+        }
+        state.subtitle = `An exclusive celebration architected for ${state.guestCapacity} attendees with a hard budget of ${formatMoney(state.totalBudget)}.`;
+        state.archetypeLabel = "CUSTOM AI PLAN";
+
+        // Accurately scale all budget categories so the sum matches state.totalBudget down to the exact rupee
+        let sumAlloc = 0;
+        state.categories.forEach(c => {
+          c.allocated = Math.round((c.share / 100) * state.totalBudget);
+          sumAlloc += c.allocated;
+        });
+        const diff = state.totalBudget - sumAlloc;
+        if (state.categories.length > 0 && diff !== 0) {
+          state.categories[0].allocated += diff;
+        }
+
+        // Scale vendor quotes proportionally
+        state.vendors.forEach(v => {
+          if (v.quote > 0) {
+            v.quote = Math.round((v.quote / 1000000) * state.totalBudget);
+            if (v.quote === 0) v.quote = Math.round(state.totalBudget * 0.15);
+          }
+        });
+      }
+
+      renderAll();
+    }
+
+    // INTERACTION HELPERS
+    function updateCatAlloc(id, val) {
+      const c = state.categories.find(item => item.id === id);
+      if (c) {
+        c.allocated = Number(val) || 0;
+        c.share = state.totalBudget > 0 ? Math.round((c.allocated / state.totalBudget) * 100) : 0;
+        renderAll();
+      }
+    }
+
+    function updateCatSpent(id, val) {
+      const c = state.categories.find(item => item.id === id);
+      if (c) {
+        c.spent = Number(val) || 0;
+        renderAll();
+      }
+    }
+
+    function deleteCategory(id) {
+      state.categories = state.categories.filter(c => c.id !== id);
+      renderAll();
+      showToast("Budget category removed from ledger.", "info");
+    }
+
+    function openAddCategoryModal() { document.getElementById('addCategoryModal').classList.remove('hidden'); }
+    function closeAddCategoryModal() { document.getElementById('addCategoryModal').classList.add('hidden'); }
+    function openAddVendorModal() { document.getElementById('addVendorModal').classList.remove('hidden'); }
+    function closeAddVendorModal() { document.getElementById('addVendorModal').classList.add('hidden'); }
+
+    function handleConfirmAddCategory(e) {
+      e.preventDefault();
+      const name = document.getElementById('inputCategoryName').value.trim();
+      const notes = document.getElementById('inputCategoryNotes').value.trim() || 'Custom allocation';
+      const amt = Number(document.getElementById('inputCategoryAmount').value) || 0;
+      if (!name) return;
+
+      state.categories.push({
+        id: `c_${Date.now()}`,
+        name: name,
+        notes: notes,
+        allocated: amt,
+        spent: 0,
+        share: state.totalBudget > 0 ? Math.round((amt / state.totalBudget) * 100) : 5
+      });
+      closeAddCategoryModal();
+      renderAll();
+      showToast(`Category "${name}" added to budget ledger.`, "success");
+    }
+
+    function toggleTask(id) {
+      const t = state.timeline.find(item => item.id === id);
+      if (t) {
+        t.completed = !t.completed;
+        renderAll();
+        showToast(t.completed ? `Milestone achieved: "${t.task}"` : `Milestone marked pending`, "info");
+      }
+    }
+
+    function deleteTask(id) {
+      state.timeline = state.timeline.filter(t => t.id !== id);
+      renderAll();
+      showToast("Milestone removed from roadmap.", "info");
+    }
+
+    function handleAddTask(e) {
+      e.preventDefault();
+      const title = document.getElementById('inputNewTask').value.trim();
+      if (!title) return;
+
+      state.timeline.push({
+        id: `t_${Date.now()}`,
+        phase: document.getElementById('selectPhase').value,
+        task: title,
+        completed: false
+      });
+      document.getElementById('inputNewTask').value = '';
+      renderAll();
+      showToast(`Milestone scheduled: "${title}"`, "success");
+    }
+
+    function updateVendorStatus(id, newStatus) {
+      const v = state.vendors.find(item => item.id === id);
+      if (v) {
+        v.status = newStatus;
+        renderAll();
+        showToast(`Vendor ${v.name} status updated to: ${newStatus}`, "info");
+      }
+    }
+
+    function deleteVendor(id) {
+      state.vendors = state.vendors.filter(v => v.id !== id);
+      renderAll();
+      showToast("Supplier removed from coordination matrix.", "info");
+    }
+
+    function handleConfirmAddVendor(e) {
+      e.preventDefault();
+      const name = document.getElementById('inputVendorName').value.trim();
+      if (!name) return;
+
+      state.vendors.push({
+        id: `v_${Date.now()}`,
+        name: name,
+        category: document.getElementById('selectVendorCategory').value,
+        status: "Not Started",
+        quote: Number(document.getElementById('inputVendorEstimate').value) || 0,
+        contact: document.getElementById('inputVendorContact').value || "contact@vendor.io",
+        notes: "Directly sourced supplier"
+      });
+      closeAddVendorModal();
+      renderAll();
+      showToast(`Supplier "${name}" registered into roster.`, "success");
+    }
+
+    function updateGuestRsvp(id, newRsvp) {
+      const g = state.guests.find(item => item.id === id);
+      if (g) {
+        g.rsvp = newRsvp;
+        renderAll();
+        showToast(`Guest ${g.name} RSVP updated: ${newRsvp}`, "info");
+      }
+    }
+
+    function deleteGuest(id) {
+      state.guests = state.guests.filter(g => g.id !== id);
+      renderAll();
+      showToast("Attendee removed from guest list.", "info");
+    }
+
+    function handleAddGuest(e) {
+      e.preventDefault();
+      const name = document.getElementById('inputGuestName').value.trim();
+      if (!name) return;
+
+      state.guests.push({
+        id: `g_${Date.now()}`,
+        name: name,
+        email: document.getElementById('inputGuestEmail').value || "guest@example.com",
+        rsvp: "Pending",
+        dietary: document.getElementById('selectDietary').value
+      });
+      document.getElementById('inputGuestName').value = '';
+      document.getElementById('inputGuestEmail').value = '';
+      renderAll();
+      showToast(`Guest "${name}" added to attendee roster.`, "success");
+    }
+
+    function copyHex(hex) {
+      navigator.clipboard.writeText(hex);
+      showToast(`Copied swatch HEX ${hex} to clipboard!`, "info");
+    }
+
+    // INITIAL RENDER
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAll();
+    });
+  </script>
+</body>
+</html>
