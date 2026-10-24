@@ -119,10 +119,14 @@
   </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex bg-[#08070F] text-slate-100 selection:bg-purple-600 selection:text-white">
+  <!-- WCAG 2.1 AA Required Skip Link -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-purple-600 focus:text-white focus:rounded-xl focus:shadow-2xl focus:font-bold">
+    Skip to main content
+  </a>
 
   <!-- ================= TOP FLOATING CELEBRATION TOAST CONTAINER ================= -->
   <!-- REPLACED UGLY POPUPS/BOTTOM CORNER BOXES WITH LUXURY TOP-CENTER PILL TOAST -->
-  <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none items-center"></div>
+  <div id="toastContainer" role="status" aria-live="polite" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none items-center"></div>
 
   <!-- ================= LEFT FIXED CELEBRATION SIDEBAR ================= -->
   <aside aria-label="Celebration Navigation Sidebar" class="w-64 shrink-0 bg-[#0E0B1A] border-r border-white/10 flex flex-col justify-between h-full z-40 select-none shadow-2xl shadow-purple-950/40">
@@ -262,7 +266,7 @@
     </header>
 
     <!-- Scrollable Workspace Canvas -->
-    <main role="main" class="flex-1 overflow-y-auto p-6 space-y-6">
+    <main id="main-content" role="main" class="flex-1 overflow-y-auto p-6 space-y-6">
 
       <!-- ================= HERO COMPONENT: ULTRA-PROMINENT INLINE AI CREATIVE DIRECTOR ================= -->
       <!-- FRONT & CENTER, GLOWING CELEBRATION VIBE COMPOSER -->
@@ -1059,7 +1063,8 @@
             <div class="space-y-1.5">
               <div class="flex items-start justify-between">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300/60">${v.category}</span>
-                <select onchange="updateVendorStatus('${v.id}', this.value)" aria-label="Status for ${v.name}" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusColors[v.status] || ''} bg-black/40 focus:outline-none">
+                <label for="vendor-status-${v.id}" class="sr-only">Status for ${escapeHtml(v.name)}</label>
+                <select id="vendor-status-${v.id}" onchange="updateVendorStatus('${v.id}', this.value)" aria-label="Status for ${escapeHtml(v.name)}" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusColors[v.status] || ''} bg-black/40 focus:outline-none">
                   <option value="Not Started" ${v.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
                   <option value="In Discussion" ${v.status === 'In Discussion' ? 'selected' : ''}>In Discussion</option>
                   <option value="Booked" ${v.status === 'Booked' ? 'selected' : ''}>Booked</option>
@@ -1106,7 +1111,8 @@
             <td class="py-3 px-4 font-bold text-white text-xs">${escapeHtml(g.name)}</td>
             <td class="py-3 px-3 text-purple-300/70 font-mono text-[11px]">${escapeHtml(g.email)}</td>
             <td class="py-3 px-3">
-              <select onchange="updateGuestRsvp('${g.id}', this.value)" aria-label="RSVP status for ${g.name}" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${rBadge} bg-black/40 focus:outline-none">
+              <label for="guest-rsvp-${g.id}" class="sr-only">RSVP status for ${escapeHtml(g.name)}</label>
+              <select id="guest-rsvp-${g.id}" onchange="updateGuestRsvp('${g.id}', this.value)" aria-label="RSVP status for ${escapeHtml(g.name)}" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${rBadge} bg-black/40 focus:outline-none">
                 <option value="Confirmed" ${g.rsvp === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
                 <option value="Pending" ${g.rsvp === 'Pending' ? 'selected' : ''}>Pending</option>
                 <option value="Declined" ${g.rsvp === 'Declined' ? 'selected' : ''}>Declined</option>
@@ -1337,26 +1343,58 @@
       }, 650);
     }
 
-    // ARCHETYPE GENERATION (SUPPORTS CUSTOM OVERRIDES FROM NATURAL LANGUAGE)
-    function generateWithAI(type, customOverrides = null) {
-      ['wedding', 'birthday', 'corporate', 'community'].forEach(k => {
-        const b = document.getElementById(`arch-${k}`);
-        if (b) {
-          if (k === type) {
-            b.className = "px-2.5 py-1.5 rounded-xl text-xs font-bold bg-pink-600/30 text-pink-200 border border-pink-500/50";
-          } else {
-            b.className = "px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white";
-          }
-        }
-      });
-
-      if (type === 'birthday') {
-        state.title = "Neon Skyline Rooftop 30th Birthday";
-        state.subtitle = "High-energy sunset celebration with craft mixology, velvet lounge pods & deep house sound.";
-        state.totalBudget = 350000;
-        state.guestCapacity = 75;
-        state.archetypeLabel = "ROOFTOP PARTY";
-        state.theme = {
+    // ARCHETYPE PRESETS DICTIONARY (ZERO-DUPLICATION MODULAR ARCHITECTURE)
+    const CELEBRATION_PRESETS = Object.freeze({
+      wedding: {
+        title: "Celestial Royal Wedding Gala",
+        subtitle: "A regal, ethereal union enveloped in moonlit indigo and rose champagne radiance with 200 honored guests.",
+        totalBudget: 1500000,
+        guestCapacity: 200,
+        archetypeLabel: "WEDDING GALA",
+        theme: {
+          name: "Luminous Indigo & Champagne Silk",
+          vibe: "Opulent, romantic, timeless & cinematic with candlelit reflections and moonlit wisteria canopies.",
+          decorStyle: "Cascading wisteria archways, fairy-light canopies, mirrored runway aisle, candelabras.",
+          musicAtmosphere: "Acoustic strings transitioning into deep jazz lounge, followed by celebratory orchestral pop crescendo.",
+          dressCodePrompt: "Black-Tie with jewel-tone royal accents (Deep amethyst, emerald or midnight navy).",
+          colorPalette: [
+            { name: "Royal Velvet", hex: "#4C2EE4", role: "Primary draping & stage backdrops" },
+            { name: "Champagne Rose", hex: "#FB7185", role: "Floral runners & table linens" },
+            { name: "Amber Lumina", hex: "#F59E0B", role: "Chandeliers & stationery seals" },
+            { name: "Emerald Lumina", hex: "#10B981", role: "Botanical foliage & bouquets" },
+            { name: "Midnight Noir", hex: "#0E0B1A", role: "Tuxedo baseline & stage accents" }
+          ]
+        },
+        categories: [
+          { id: "c1", name: "Venue & Architectural Staging", share: 40, allocated: 600000, spent: 250000, notes: "Ballroom & bridal suite buyout" },
+          { id: "c2", name: "Gourmet Catering & Mixology", share: 28, allocated: 420000, spent: 0, notes: "5-course tasting & artisan cocktail bar" },
+          { id: "c3", name: "Floral, Lighting & Decor", share: 14, allocated: 210000, spent: 0, notes: "Live floral canopies & pin-spots" },
+          { id: "c4", name: "Cinematography & 35mm Film", share: 10, allocated: 150000, spent: 75000, notes: "Drone & editorial captures" },
+          { id: "c5", name: "Live Quartet & Sonic Audio", share: 5, allocated: 75000, spent: 0, notes: "Acoustic strings & 6-piece band" },
+          { id: "c6", name: "Emergency Contingency Reserve", share: 3, allocated: 45000, spent: 0, notes: "Unforeseen logistics reserve" }
+        ],
+        timeline: [
+          { id: "t1", phase: "3 Months Out", task: "Lock prime palace venue contract & sign master permits", completed: true },
+          { id: "t2", phase: "2 Months Out", task: "Curate chef tasting menu and confirm bespoke wine pairings", completed: false },
+          { id: "t3", phase: "1 Month Out", task: "Dispatch digital RSVP invitations with bespoke attire guide", completed: false },
+          { id: "t4", phase: "2 Weeks Out", task: "Finalize minute-by-minute order of events & sound checks", completed: false },
+          { id: "t5", phase: "48 Hours Out", task: "Walkthrough rehearsal dinner & vendor access permits", completed: false },
+          { id: "t6", phase: "Day of Event", task: "Morning bridal suite breakfast & champagne toast rollout", completed: false }
+        ],
+        vendors: [
+          { id: "v1", name: "Grand Palais Regency & Gardens", category: "Venue", status: "Booked", quote: 600000, contact: "concierge@grandpalais.luxury", notes: "Includes valet & security" },
+          { id: "v2", name: "Artisan Culinary Atelier", category: "Catering", status: "In Discussion", quote: 420000, contact: "events@ateliergastronomy.com", notes: "Chef tasting session pending" },
+          { id: "v3", name: "Velvet & Petal Floral Design", category: "Decor", status: "Not Started", quote: 210000, contact: "hello@velvetpetal.co", notes: "Floor plan submitted" },
+          { id: "v4", name: "Lumina Cinematic Studios", category: "Photography", status: "Booked", quote: 150000, contact: "studio@luminacinema.io", notes: "Contract signed, deposit paid" }
+        ]
+      },
+      birthday: {
+        title: "Neon Skyline Rooftop 30th Birthday",
+        subtitle: "High-energy sunset celebration with craft mixology, velvet lounge pods & deep house sound.",
+        totalBudget: 350000,
+        guestCapacity: 75,
+        archetypeLabel: "ROOFTOP PARTY",
+        theme: {
           name: "Sunset Magenta & Ultraviolet Disco",
           vibe: "Euphoric, chic, vibrant, stylish & electric sunset energy.",
           decorStyle: "Custom neon sign art, acrylic bar pedestals, iridescent backdrops, velvet floor cushions.",
@@ -1369,31 +1407,32 @@
             { name: "Electric Cyan", hex: "#06B6D4", role: "Menu cards & wristbands" },
             { name: "Deep Amethyst", hex: "#1A102F", role: "Lounge furniture bases" }
           ]
-        };
-        state.categories = [
+        },
+        categories: [
           { id: "c1", name: "Rooftop Lounge Buyout", share: 35, allocated: 122500, spent: 50000, notes: "Private terrace & security" },
           { id: "c2", name: "Cocktail Mixology & Sliders", share: 30, allocated: 105000, spent: 0, notes: "Open bar & passed canapés" },
           { id: "c3", name: "DJ Console & Sound Array", share: 18, allocated: 63000, spent: 0, notes: "Pioneer DJ deck & lights" },
           { id: "c4", name: "Neon Decor & Photo Studio", share: 12, allocated: 42000, spent: 20000, notes: "Custom LED name sign" },
           { id: "c5", name: "Contingency Reserve", share: 5, allocated: 17500, spent: 0, notes: "Late night extension" }
-        ];
-        state.timeline = [
+        ],
+        timeline: [
           { id: "t1", phase: "4 Weeks Out", task: "Book rooftop terrace & confirm sound permits", completed: true },
           { id: "t2", phase: "2 Weeks Out", task: "Finalize signature 3-cocktail drink menu with lead mixologist", completed: false },
           { id: "t3", phase: "1 Week Out", task: "Lock guest RSVP list & dispatch QR entry codes", completed: false },
           { id: "t4", phase: "Day of Event", task: "Soundcheck DJ consoles & light sunset neon fixtures", completed: false }
-        ];
-        state.vendors = [
+        ],
+        vendors: [
           { id: "v1", name: "Skyline Altitude Lounge", category: "Venue", status: "Booked", quote: 122500, contact: "events@skylinebar.com", notes: "Includes private bartender" },
           { id: "v2", name: "SonicGroove DJ Agency", category: "Music", status: "Booked", quote: 63000, contact: "booking@sonicgroove.live", notes: "Sunset set scheduled" }
-        ];
-      } else if (type === 'corporate') {
-        state.title = "Apex Tech Keynote & Gala Summit";
-        state.subtitle = "Executive innovation conference followed by awards banquet and networking lounge for 150 leaders.";
-        state.totalBudget = 1000000;
-        state.guestCapacity = 150;
-        state.archetypeLabel = "TECH SUMMIT";
-        state.theme = {
+        ]
+      },
+      corporate: {
+        title: "Apex Tech Keynote & Gala Summit",
+        subtitle: "Executive innovation conference followed by awards banquet and networking lounge for 150 leaders.",
+        totalBudget: 1000000,
+        guestCapacity: 150,
+        archetypeLabel: "TECH SUMMIT",
+        theme: {
           name: "Cyber Violet & Platinum Lumina",
           vibe: "Futuristic, sophisticated, commanding & visionary with ultra-crisp optics.",
           decorStyle: "Curved LED presentation walls, brushed titanium accents, linear ambient lighting.",
@@ -1405,27 +1444,28 @@
             { name: "Platinum Slate", hex: "#E2E8F0", role: "Podium & executive collateral" },
             { name: "Midnight Void", hex: "#0B0914", role: "Auditorium backdrop" }
           ]
-        };
-        state.categories = [
+        },
+        categories: [
           { id: "c1", name: "Convention Hall & AV Rigging", share: 45, allocated: 450000, spent: 200000, notes: "LED wall & wireless mics" },
           { id: "c2", name: "Executive Banquet & Coffee Bar", share: 30, allocated: 300000, spent: 0, notes: "Buffet & espresso lounge" },
           { id: "c3", name: "Keynote Speakers & Production", share: 15, allocated: 150000, spent: 50000, notes: "Honorarium & travel" },
           { id: "c4", name: "Swag Bags & RFID Badges", share: 10, allocated: 100000, spent: 0, notes: "Eco-friendly delegate kit" }
-        ];
-        state.timeline = [
+        ],
+        timeline: [
           { id: "t1", phase: "2 Months Out", task: "Lock keynote speakers & execute non-disclosure riders", completed: true },
           { id: "t2", phase: "1 Month Out", task: "Review AV presentation decks with production team", completed: false }
-        ];
-        state.vendors = [
+        ],
+        vendors: [
           { id: "v1", name: "Grand Convention Center", category: "Venue", status: "Booked", quote: 450000, contact: "booking@grandcenter.org", notes: "Main hall + 2 breakout suites" }
-        ];
-      } else if (type === 'community') {
-        state.title = "Harmony Eco-Carnival & Festival";
-        state.subtitle = "A vibrant, open-air celebration uniting artisan crafts, food trucks & indie music for 300 guests.";
-        state.totalBudget = 500000;
-        state.guestCapacity = 300;
-        state.archetypeLabel = "ECO CARNIVAL";
-        state.theme = {
+        ]
+      },
+      community: {
+        title: "Harmony Eco-Carnival & Festival",
+        subtitle: "A vibrant, open-air celebration uniting artisan crafts, food trucks & indie music for 300 guests.",
+        totalBudget: 500000,
+        guestCapacity: 300,
+        archetypeLabel: "ECO CARNIVAL",
+        theme: {
           name: "Bohemian Emerald & Sunburst Amber",
           vibe: "Warm, inclusive, joyous & celebratory with festival energy.",
           decorStyle: "Festoon string bulbs overhead, upcycled wood kiosks, botanical installations.",
@@ -1437,66 +1477,50 @@
             { name: "Warm Rose", hex: "#FB7185", role: "Artisan crafts & florals" },
             { name: "Linen Cream", hex: "#FEF3C7", role: "Cotton banners" }
           ]
-        };
-        state.categories = [
+        },
+        categories: [
           { id: "c1", name: "Open Park & Municipal Permits", share: 30, allocated: 150000, spent: 0, notes: "City council park clearance" },
           { id: "c2", name: "Acoustic Stages & Sound Array", share: 30, allocated: 150000, spent: 0, notes: "Solar powered audio" },
           { id: "c3", name: "Artisan Canopies & Stalls", share: 25, allocated: 125000, spent: 0, notes: "30 bamboo stall booths" },
           { id: "c4", name: "Eco Sanitation & First Aid", share: 15, allocated: 75000, spent: 0, notes: "Zero-waste sorting squad" }
-        ];
-        state.timeline = [
+        ],
+        timeline: [
           { id: "t1", phase: "6 Weeks Out", task: "Submit municipal public gathering permits", completed: false },
           { id: "t2", phase: "3 Weeks Out", task: "Curate 30 food truck & craft vendor stall allotments", completed: false }
-        ];
-        state.vendors = [
+        ],
+        vendors: [
           { id: "v1", name: "City Parks & Recreation", category: "Venue", status: "Booked", quote: 150000, contact: "parks@citygov.org", notes: "Permit granted" }
-        ];
-      } else {
-        // Wedding
-        state.title = "Celestial Royal Wedding Gala";
-        state.subtitle = "A regal, ethereal union enveloped in moonlit indigo and rose champagne radiance with 200 honored guests.";
-        state.totalBudget = 1500000;
-        state.guestCapacity = 200;
-        state.archetypeLabel = "WEDDING GALA";
-        state.theme = {
-          name: "Luminous Indigo & Champagne Silk",
-          vibe: "Opulent, romantic, timeless & cinematic with candlelit reflections.",
-          decorStyle: "Cascading wisteria archways, fairy-light canopies, mirrored runway aisle, candelabras.",
-          musicAtmosphere: "Acoustic strings transitioning into deep jazz lounge, followed by celebratory orchestral pop crescendo.",
-          dressCodePrompt: "Black-Tie with jewel-tone royal accents (Deep amethyst, emerald or midnight navy).",
-          colorPalette: [
-            { name: "Royal Velvet", hex: "#4C2EE4", role: "Primary draping & stage backdrops" },
-            { name: "Champagne Rose", hex: "#FB7185", role: "Floral runners & table linens" },
-            { name: "Amber Lumina", hex: "#F59E0B", role: "Chandeliers & stationery seals" },
-            { name: "Emerald Lumina", hex: "#10B981", role: "Botanical foliage & bouquets" },
-            { name: "Midnight Noir", hex: "#0E0B1A", role: "Tuxedo baseline & stage accents" }
-          ]
-        };
-        state.categories = [
-          { id: "c1", name: "Venue & Architectural Staging", share: 40, allocated: 600000, spent: 250000, notes: "Ballroom & bridal suite buyout" },
-          { id: "c2", name: "Gourmet Catering & Mixology", share: 28, allocated: 420000, spent: 0, notes: "5-course tasting & artisan cocktail bar" },
-          { id: "c3", name: "Floral, Lighting & Decor", share: 14, allocated: 210000, spent: 0, notes: "Live floral canopies & pin-spots" },
-          { id: "c4", name: "Cinematography & 35mm Film", share: 10, allocated: 150000, spent: 75000, notes: "Drone & editorial captures" },
-          { id: "c5", name: "Live Quartet & Sonic Audio", share: 5, allocated: 75000, spent: 0, notes: "Acoustic strings & 6-piece band" },
-          { id: "c6", name: "Emergency Contingency Reserve", share: 3, allocated: 45000, spent: 0, notes: "Unforeseen logistics reserve" }
-        ];
-        state.timeline = [
-          { id: "t1", phase: "3 Months Out", task: "Lock prime palace venue contract & sign master permits", completed: true },
-          { id: "t2", phase: "2 Months Out", task: "Curate chef tasting menu and confirm bespoke wine pairings", completed: false },
-          { id: "t3", phase: "1 Month Out", task: "Dispatch digital RSVP invitations with bespoke attire guide", completed: false },
-          { id: "t4", phase: "2 Weeks Out", task: "Finalize minute-by-minute order of events & sound checks", completed: false },
-          { id: "t5", phase: "48 Hours Out", task: "Walkthrough rehearsal dinner & vendor access permits", completed: false },
-          { id: "t6", phase: "Day of Event", task: "Morning bridal suite breakfast & champagne toast rollout", completed: false }
-        ];
-        state.vendors = [
-          { id: "v1", name: "Grand Palais Regency & Gardens", category: "Venue", status: "Booked", quote: 600000, contact: "concierge@grandpalais.luxury", notes: "Includes valet & security" },
-          { id: "v2", name: "Artisan Culinary Atelier", category: "Catering", status: "In Discussion", quote: 420000, contact: "events@ateliergastronomy.com", notes: "Chef tasting session pending" },
-          { id: "v3", name: "Velvet & Petal Floral Design", category: "Decor", status: "Not Started", quote: 210000, contact: "hello@velvetpetal.co", notes: "Floor plan submitted" },
-          { id: "v4", name: "Lumina Cinematic Studios", category: "Photography", status: "Booked", quote: 150000, contact: "studio@luminacinema.io", notes: "Contract signed, deposit paid" }
-        ];
+        ]
       }
+    });
 
-      // If active currency is not INR and no custom budget override was provided, scale base preset to active currency
+    /**
+     * Synthesizes and loads celebration archetype
+     * @param {'wedding'|'birthday'|'corporate'|'community'} type Archetype key
+     * @param {Object|null} customOverrides Custom overrides from natural language
+     */
+    function generateWithAI(type, customOverrides = null) {
+      ['wedding', 'birthday', 'corporate', 'community'].forEach(k => {
+        const b = document.getElementById(`arch-${k}`);
+        if (b) {
+          b.className = (k === type)
+            ? "px-2.5 py-1.5 rounded-xl text-xs font-bold bg-pink-600/30 text-pink-200 border border-pink-500/50"
+            : "px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white";
+        }
+      });
+
+      const preset = CELEBRATION_PRESETS[type] || CELEBRATION_PRESETS.wedding;
+      state.title = preset.title;
+      state.subtitle = preset.subtitle;
+      state.totalBudget = preset.totalBudget;
+      state.guestCapacity = preset.guestCapacity;
+      state.archetypeLabel = preset.archetypeLabel;
+      state.theme = JSON.parse(JSON.stringify(preset.theme));
+      state.categories = JSON.parse(JSON.stringify(preset.categories));
+      state.timeline = JSON.parse(JSON.stringify(preset.timeline));
+      state.vendors = JSON.parse(JSON.stringify(preset.vendors));
+
+      // Currency scaling
       if (currentCurrency !== '₹' && (!customOverrides || !customOverrides.budget)) {
         state.totalBudget = Math.max(1, Math.round(state.totalBudget / RATES_TO_INR[currentCurrency]));
         let sumAlloc = 0;
@@ -1514,24 +1538,17 @@
         });
       }
 
-      // Apply dynamic natural language overrides (exact budget, custom capacity, title, decor)
+      // Dynamic natural language overrides
       if (customOverrides) {
-        if (customOverrides.budget && customOverrides.budget > 0) {
-          state.totalBudget = customOverrides.budget;
-        }
-        if (customOverrides.capacity && customOverrides.capacity > 0) {
-          state.guestCapacity = customOverrides.capacity;
-        }
-        if (customOverrides.title && customOverrides.title.length > 2) {
-          state.title = customOverrides.title;
-        }
+        if (customOverrides.budget && customOverrides.budget > 0) state.totalBudget = customOverrides.budget;
+        if (customOverrides.capacity && customOverrides.capacity > 0) state.guestCapacity = customOverrides.capacity;
+        if (customOverrides.title && customOverrides.title.length > 2) state.title = customOverrides.title;
         if (customOverrides.decor && customOverrides.decor.length > 2) {
           state.theme.decorStyle = customOverrides.decor + ", customized with atmospheric lighting and bespoke installations.";
         }
         state.subtitle = `An exclusive celebration architected for ${state.guestCapacity} attendees with a hard budget of ${formatMoney(state.totalBudget)}.`;
         state.archetypeLabel = "CUSTOM AI PLAN";
 
-        // Accurately scale all budget categories so the sum matches state.totalBudget down to the exact rupee
         let sumAlloc = 0;
         state.categories.forEach(c => {
           c.allocated = Math.round((c.share / 100) * state.totalBudget);
@@ -1542,7 +1559,6 @@
           state.categories[0].allocated += diff;
         }
 
-        // Scale vendor quotes proportionally
         state.vendors.forEach(v => {
           if (v.quote > 0) {
             v.quote = Math.round((v.quote / 1000000) * state.totalBudget);
