@@ -97,6 +97,17 @@
     ::-webkit-scrollbar-track { background: #08070F; }
     ::-webkit-scrollbar-thumb { background: #2E2452; border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #443577; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
   </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex bg-[#08070F] text-slate-100 selection:bg-purple-600 selection:text-white">
@@ -106,7 +117,7 @@
   <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none items-center"></div>
 
   <!-- ================= LEFT FIXED CELEBRATION SIDEBAR ================= -->
-  <aside class="w-64 shrink-0 bg-[#0E0B1A] border-r border-white/10 flex flex-col justify-between h-full z-40 select-none shadow-2xl shadow-purple-950/40">
+  <aside aria-label="Celebration Navigation Sidebar" class="w-64 shrink-0 bg-[#0E0B1A] border-r border-white/10 flex flex-col justify-between h-full z-40 select-none shadow-2xl shadow-purple-950/40">
     
     <div class="space-y-4 p-4 lg:p-5">
       <!-- Brand Logo -->
@@ -136,7 +147,7 @@
             <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping"></span>
             <span>Live Celebration</span>
           </span>
-          <button onclick="openSetLimitModal()" class="text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/30 transition-all">
+          <button onclick="openSetLimitModal()" aria-label="Set event limits and capacity" class="text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/30 transition-all">
             <i data-lucide="sliders" class="w-3 h-3"></i>
             <span>Set Limits</span>
           </button>
@@ -155,30 +166,30 @@
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="space-y-1.5">
+      <nav role="navigation" aria-label="Planning Studio Navigation" class="space-y-1.5">
         <div class="text-[10px] uppercase font-bold tracking-wider text-purple-300/50 px-3 pb-0.5">Planning Studio</div>
 
-        <button onclick="switchSection('theme')" id="nav-btn-theme" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600/30 to-pink-600/20 text-purple-200 border border-purple-500/40 shadow-sm transition-all text-left">
+        <button onclick="switchSection('theme')" id="nav-btn-theme" aria-label="Theme and Aesthetic Studio" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600/30 to-pink-600/20 text-purple-200 border border-purple-500/40 shadow-sm transition-all text-left">
           <i data-lucide="palette" class="w-4 h-4 text-pink-400"></i>
           <span>1. Theme & Aesthetic Studio</span>
         </button>
 
-        <button onclick="switchSection('budget')" id="nav-btn-budget" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <button onclick="switchSection('budget')" id="nav-btn-budget" aria-label="Dynamic Budget and Limits" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
           <i data-lucide="pie-chart" class="w-4 h-4 text-purple-400"></i>
           <span>2. Dynamic Budget & Limits</span>
         </button>
 
-        <button onclick="switchSection('timeline')" id="nav-btn-timeline" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <button onclick="switchSection('timeline')" id="nav-btn-timeline" aria-label="Milestone Countdown" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
           <i data-lucide="calendar" class="w-4 h-4 text-amber-400"></i>
           <span>3. Milestone Countdown</span>
         </button>
 
-        <button onclick="switchSection('vendors')" id="nav-btn-vendors" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <button onclick="switchSection('vendors')" id="nav-btn-vendors" aria-label="Supplier Coordination" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
           <i data-lucide="briefcase" class="w-4 h-4 text-emerald-400"></i>
           <span>4. Supplier Coordination</span>
         </button>
 
-        <button onclick="switchSection('rsvp')" id="nav-btn-rsvp" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <button onclick="switchSection('rsvp')" id="nav-btn-rsvp" aria-label="Guest Hospitality and RSVP" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
           <i data-lucide="users" class="w-4 h-4 text-sky-400"></i>
           <span>5. Guest Hospitality & RSVP</span>
         </button>
@@ -189,19 +200,19 @@
     <div class="p-4 space-y-3 border-t border-white/10 bg-[#0A0713]">
       <div class="flex items-center justify-between text-xs text-slate-400 px-1">
         <span class="font-medium text-[11px]">Active Currency</span>
-        <div class="flex items-center bg-black/60 rounded-xl border border-white/10 p-0.5">
-          <button onclick="setCurrency('₹')" id="curr-inr" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white">₹</button>
-          <button onclick="setCurrency('$')" id="curr-usd" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold text-slate-400 hover:text-white">$</button>
-          <button onclick="setCurrency('€')" id="curr-eur" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold text-slate-400 hover:text-white">€</button>
+        <div role="group" aria-label="Select Currency" class="flex items-center bg-black/60 rounded-xl border border-white/10 p-0.5">
+          <button onclick="setCurrency('₹')" id="curr-inr" aria-label="Set active currency to Indian Rupee (₹)" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white">₹</button>
+          <button onclick="setCurrency('$')" id="curr-usd" aria-label="Set active currency to US Dollar ($)" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold text-slate-400 hover:text-white">$</button>
+          <button onclick="setCurrency('€')" id="curr-eur" aria-label="Set active currency to Euro (€)" class="px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold text-slate-400 hover:text-white">€</button>
         </div>
       </div>
 
-      <button onclick="openSetLimitModal()" class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-all">
+      <button onclick="openSetLimitModal()" aria-label="Adjust Limits and Target" class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 transition-all">
         <i data-lucide="sliders" class="w-3.5 h-3.5 text-amber-400"></i>
         <span>Adjust Limits & Target</span>
       </button>
 
-      <button onclick="window.print()" class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-90 text-white shadow-lg shadow-purple-600/30 transition-all">
+      <button onclick="window.print()" aria-label="Export Celebration Dossier" class="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:opacity-90 text-white shadow-lg shadow-purple-600/30 transition-all">
         <i data-lucide="printer" class="w-3.5 h-3.5"></i>
         <span>Export Celebration Dossier</span>
       </button>
@@ -212,7 +223,7 @@
   <div class="flex-1 flex flex-col h-full overflow-hidden">
     
     <!-- Top Header with Theme Switcher -->
-    <header class="h-16 shrink-0 bg-[#0E0B1A]/90 border-b border-white/10 px-6 flex items-center justify-between backdrop-blur-md">
+    <header role="banner" class="h-16 shrink-0 bg-[#0E0B1A]/90 border-b border-white/10 px-6 flex items-center justify-between backdrop-blur-md">
       <div>
         <div class="flex items-center gap-2.5">
           <h2 id="viewHeading" class="text-base lg:text-lg font-bold text-white font-serif">1. Theme & Aesthetic Studio</h2>
@@ -226,16 +237,16 @@
       <div class="flex items-center gap-2">
         <span class="text-xs text-purple-200/60 font-semibold hidden lg:inline">Quick Vibe Switch:</span>
         <div class="flex items-center gap-1.5">
-          <button onclick="generateWithAI('wedding')" id="arch-wedding" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-pink-600/30 text-pink-200 border border-pink-500/50">
+          <button onclick="generateWithAI('wedding')" id="arch-wedding" aria-label="Switch to Wedding Gala archetype" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-pink-600/30 text-pink-200 border border-pink-500/50">
             👑 Wedding Gala
           </button>
-          <button onclick="generateWithAI('birthday')" id="arch-birthday" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
+          <button onclick="generateWithAI('birthday')" id="arch-birthday" aria-label="Switch to Rooftop Party archetype" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
             🎂 Rooftop Party
           </button>
-          <button onclick="generateWithAI('corporate')" id="arch-corporate" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
+          <button onclick="generateWithAI('corporate')" id="arch-corporate" aria-label="Switch to Tech Keynote archetype" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
             🏢 Tech Keynote
           </button>
-          <button onclick="generateWithAI('community')" id="arch-community" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
+          <button onclick="generateWithAI('community')" id="arch-community" aria-label="Switch to Boho Carnival archetype" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-black/40 text-slate-300 border border-white/10 hover:text-white">
             🎪 Boho Carnival
           </button>
         </div>
@@ -243,11 +254,11 @@
     </header>
 
     <!-- Scrollable Workspace Canvas -->
-    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+    <main role="main" class="flex-1 overflow-y-auto p-6 space-y-6">
 
       <!-- ================= HERO COMPONENT: ULTRA-PROMINENT INLINE AI CREATIVE DIRECTOR ================= -->
       <!-- FRONT & CENTER, GLOWING CELEBRATION VIBE COMPOSER -->
-      <section class="panel-card rounded-3xl p-5 border border-purple-500/30 bg-gradient-to-r from-purple-950/50 via-[#1A142E] to-pink-950/40 relative overflow-hidden space-y-3.5 shadow-xl shadow-purple-950/30">
+      <section role="region" aria-label="AI Creative Director" class="panel-card rounded-3xl p-5 border border-purple-500/30 bg-gradient-to-r from-purple-950/50 via-[#1A142E] to-pink-950/40 relative overflow-hidden space-y-3.5 shadow-xl shadow-purple-950/30">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 p-[1px] shadow-lg shadow-purple-500/20 shrink-0">
@@ -270,12 +281,14 @@
         </div>
 
         <!-- Inline Prompt Input Form -->
-        <form onsubmit="handleNaturalPrompt(event)" class="space-y-3">
+        <form onsubmit="handleNaturalPrompt(event)" aria-label="GenAI Creative Director Prompt Form" class="space-y-3">
           <div class="flex flex-col sm:flex-row gap-2.5">
             <div class="relative flex-1">
               <i data-lucide="wand-2" class="w-4 h-4 absolute left-4 top-3.5 text-pink-400"></i>
+              <label for="aiPromptText" class="sr-only">Celebration prompt and requirements</label>
               <input 
-                id="aiPromptText" 
+                id="aiPromptText"
+                aria-label="Celebration prompt and requirements" 
                 type="text" 
                 placeholder="e.g. 30th Rooftop Sunset Party for 75 friends with live DJ, neon aesthetics & craft cocktail bar, budget ₹3,50,000..." 
                 class="w-full pl-11 pr-4 py-3 rounded-2xl input-field text-xs text-white placeholder:text-purple-300/40 focus:outline-none border-purple-500/30"
@@ -312,14 +325,14 @@
       </section>
 
       <!-- ================= SECTION 1: THEME & AESTHETIC STUDIO ================= -->
-      <section id="section-theme" class="space-y-6">
+      <section id="section-theme" role="region" aria-label="Theme and Aesthetic Studio" class="space-y-6">
         <div class="panel-card rounded-3xl p-6 border border-pink-500/30 bg-gradient-to-r from-purple-950/40 via-card to-pink-950/40 space-y-3 relative">
           <div class="flex items-center justify-between">
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">
               <i data-lucide="sparkles" class="w-3.5 h-3.5 text-pink-300"></i>
               <span>Curated Creative Direction</span>
             </div>
-            <button onclick="openSetLimitModal()" class="text-xs text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-400/10 border border-amber-400/20">
+            <button onclick="openSetLimitModal()" aria-label="Customize Limits" class="text-xs text-amber-300 hover:text-amber-200 font-semibold flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-400/10 border border-amber-400/20">
               <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
               <span>Customize Limits</span>
             </button>
@@ -379,10 +392,10 @@
       </section>
 
       <!-- ================= SECTION 2: BUDGET & LIMIT GOVERNANCE ================= -->
-      <section id="section-budget" class="hidden space-y-6">
+      <section id="section-budget" role="region" aria-label="Dynamic Budget and Limits" class="hidden space-y-6">
         <!-- 4 Master KPI Cards with Direct Limit Editing -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div onclick="openSetLimitModal()" class="cursor-pointer panel-card rounded-2xl p-5 border border-amber-500/30 group hover:border-amber-400 transition-all bg-gradient-to-br from-amber-950/20 to-card">
+          <div onclick="openSetLimitModal()" role="button" tabindex="0" aria-label="Click to change ceiling limit" onkeydown="if(event.key==='Enter'||event.key===' ')openSetLimitModal()" class="cursor-pointer panel-card rounded-2xl p-5 border border-amber-500/30 group hover:border-amber-400 transition-all bg-gradient-to-br from-amber-950/20 to-card">
             <div class="flex items-center justify-between text-amber-300 text-xs font-bold uppercase tracking-wider">
               <span>Hard Budget Ceiling</span>
               <span class="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30 flex items-center gap-1">
@@ -448,7 +461,7 @@
               <span class="text-[9px] font-mono text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded-full border border-pink-500/20">Chart.js Live</span>
             </div>
             <div class="relative h-36 flex items-center justify-center">
-              <canvas id="splitChart"></canvas>
+              <canvas id="splitChart" role="img" aria-label="Expense Distribution Donut Chart"></canvas>
             </div>
           </div>
         </div>
@@ -461,11 +474,11 @@
               <p class="text-xs text-purple-300/70">Directly adjust planned budgets or record paid amounts in real time.</p>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="autoRebalance()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-purple-200 border border-white/10 transition-all">
+              <button onclick="autoRebalance()" aria-label="Auto-Rebalance Category Allocations" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-purple-200 border border-white/10 transition-all">
                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-pink-400"></i>
                 <span>Auto-Rebalance</span>
               </button>
-              <button onclick="openAddCategoryModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white shadow-md shadow-purple-600/30">
+              <button onclick="openAddCategoryModal()" aria-label="Add Custom Service Category" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white shadow-md shadow-purple-600/30">
                 <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                 <span>Add Category</span>
               </button>
@@ -474,7 +487,7 @@
 
           <div class="panel-card rounded-2xl border border-white/10 overflow-hidden">
             <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
+              <table class="w-full text-left text-xs" aria-label="Service Category Allocation & Expense Ledger">
                 <thead class="bg-[#120D22] text-purple-300 uppercase text-[10px] font-bold tracking-wider border-b border-white/10">
                   <tr>
                     <th class="py-3 px-4">Service Category & Scope</th>
@@ -494,7 +507,7 @@
       </section>
 
       <!-- ================= SECTION 3: TIMELINE ROADMAP ================= -->
-      <section id="section-timeline" class="hidden space-y-6">
+      <section id="section-timeline" role="region" aria-label="Reverse Countdown Execution Roadmap" class="hidden space-y-6">
         <div class="panel-card rounded-2xl p-5 border border-purple-500/20 flex items-center justify-between">
           <div>
             <h3 class="text-base font-bold text-white font-serif">Reverse Countdown Execution Roadmap</h3>
@@ -506,9 +519,9 @@
           </div>
         </div>
 
-        <form onsubmit="handleAddTask(event)" class="panel-card rounded-2xl p-4 border border-white/10 flex flex-col sm:flex-row gap-3">
-          <input id="inputNewTask" type="text" placeholder="Add custom action item (e.g. Schedule final floral tasting & walkthrough)..." class="flex-1 px-4 py-2.5 rounded-xl input-field text-xs text-white" required>
-          <select id="selectPhase" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
+        <form onsubmit="handleAddTask(event)" aria-label="Add Milestone Task Form" class="panel-card rounded-2xl p-4 border border-white/10 flex flex-col sm:flex-row gap-3">
+          <label for="inputNewTask" class="sr-only">Custom Action Item</label><input id="inputNewTask" aria-label="Custom action item" type="text" placeholder="Add custom action item (e.g. Schedule final floral tasting & walkthrough)..." class="flex-1 px-4 py-2.5 rounded-xl input-field text-xs text-white" required>
+          <label for="selectPhase" class="sr-only">Milestone Phase</label><select id="selectPhase" aria-label="Milestone Phase" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
             <option value="3 Months Out">3 Months Out</option>
             <option value="1 Month Out">1 Month Out</option>
             <option value="2 Weeks Out">2 Weeks Out</option>
@@ -525,13 +538,13 @@
       </section>
 
       <!-- ================= SECTION 4: VENDOR HUB ================= -->
-      <section id="section-vendors" class="hidden space-y-6">
+      <section id="section-vendors" role="region" aria-label="Vendor and Supplier Coordination Hub" class="hidden space-y-6">
         <div class="panel-card rounded-2xl p-5 border border-purple-500/20 flex items-center justify-between">
           <div>
             <h3 class="text-base font-bold text-white font-serif">Vendor & Supplier Coordination Hub</h3>
             <p class="text-xs text-purple-300/70">Contracting status pipeline, quotes, contacts, and delivery notes.</p>
           </div>
-          <button onclick="openAddVendorModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white shadow-md">
+          <button onclick="openAddVendorModal()" aria-label="Add Supplier" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white shadow-md">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i>
             <span>Add Supplier</span>
           </button>
@@ -542,7 +555,7 @@
       </section>
 
       <!-- ================= SECTION 5: GUEST RSVP ================= -->
-      <section id="section-rsvp" class="hidden space-y-6">
+      <section id="section-rsvp" role="region" aria-label="Guest Hospitality and RSVP Management" class="hidden space-y-6">
         <div class="panel-card rounded-2xl p-5 border border-purple-500/20 flex items-center justify-between">
           <div>
             <h3 class="text-base font-bold text-white font-serif">Guest Hospitality & RSVP Management</h3>
@@ -554,10 +567,10 @@
           </div>
         </div>
 
-        <form onsubmit="handleAddGuest(event)" class="panel-card rounded-2xl p-4 border border-white/10 grid grid-cols-1 md:grid-cols-4 gap-3">
-          <input id="inputGuestName" type="text" placeholder="Full Attendee Name *" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white" required>
-          <input id="inputGuestEmail" type="email" placeholder="Email Address" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
-          <select id="selectDietary" class="px-3 py-2.5 rounded-xl input-field text-xs text-white">
+        <form onsubmit="handleAddGuest(event)" aria-label="Add Guest RSVP Form" class="panel-card rounded-2xl p-4 border border-white/10 grid grid-cols-1 md:grid-cols-4 gap-3">
+          <label for="inputGuestName" class="sr-only">Full Attendee Name</label><input id="inputGuestName" aria-label="Full Attendee Name" type="text" placeholder="Full Attendee Name *" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white" required>
+          <label for="inputGuestEmail" class="sr-only">Email Address</label><input id="inputGuestEmail" aria-label="Email Address" type="email" placeholder="Email Address" class="px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
+          <label for="selectDietary" class="sr-only">Dietary Preference</label><select id="selectDietary" aria-label="Dietary Preference" class="px-3 py-2.5 rounded-xl input-field text-xs text-white">
             <option value="Standard">Dietary: Standard</option>
             <option value="Vegetarian">Dietary: Vegetarian</option>
             <option value="Vegan">Dietary: Vegan</option>
@@ -571,7 +584,7 @@
 
         <div class="panel-card rounded-2xl border border-white/10 overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
+            <table class="w-full text-left text-xs" aria-label="Guest Hospitality Roster">
               <thead class="bg-[#120D22] text-purple-300 uppercase text-[10px] font-bold tracking-wider border-b border-white/10">
                 <tr>
                   <th class="py-3 px-4">Attendee Name</th>
@@ -593,37 +606,37 @@
 
   <!-- ================= MODALS ================= -->
   <!-- 1. SET LIMITS MODAL -->
-  <div id="setLimitModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+  <div id="setLimitModal" role="dialog" aria-modal="true" aria-labelledby="setLimitModalTitle" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="panel-card rounded-3xl p-6 w-full max-w-md border border-purple-500/40 space-y-4 bg-[#140F26] shadow-2xl shadow-purple-900/50">
       <div class="flex items-start justify-between">
         <div>
-          <h3 class="text-base font-bold text-white font-serif">Adjust Event Limits & Capacity</h3>
+          <h3 id="setLimitModalTitle" class="text-base font-bold text-white font-serif">Adjust Event Limits & Capacity</h3>
           <p class="text-xs text-purple-300/70">Directly set hard budget ceiling & guest capacity.</p>
         </div>
-        <button onclick="closeSetLimitModal()" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
+        <button onclick="closeSetLimitModal()" aria-label="Close Set Limits Modal" class="text-slate-400 hover:text-white p-1 text-base">✕</button>
       </div>
 
       <form onsubmit="handleSaveLimits(event)" class="space-y-3.5">
         <div>
-          <label class="block text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1">
+          <label for="inputLimitBudget" class="block text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-1">
             Total Event Budget Limit (<span class="currSymbol">₹</span>)
           </label>
           <input id="inputLimitBudget" type="number" step="1000" class="w-full px-3.5 py-2.5 rounded-xl input-field text-sm font-mono text-amber-300 font-bold" required>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-pink-300 uppercase tracking-wider mb-1">
+          <label for="inputLimitGuests" class="block text-[11px] font-bold text-pink-300 uppercase tracking-wider mb-1">
             Target Guest Headcount (Capacity)
           </label>
           <input id="inputLimitGuests" type="number" min="1" class="w-full px-3.5 py-2.5 rounded-xl input-field text-sm font-mono text-pink-300 font-bold" required>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-purple-300 uppercase tracking-wider mb-1">
+          <label for="inputLimitTitle" class="block text-[11px] font-bold text-purple-300 uppercase tracking-wider mb-1">
             Event Title / Name
           </label>
           <input id="inputLimitTitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl input-field text-xs text-white" required>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-purple-300 uppercase tracking-wider mb-1">
+          <label for="inputLimitSubtitle" class="block text-[11px] font-bold text-purple-300 uppercase tracking-wider mb-1">
             Event Subtitle / Vibe
           </label>
           <input id="inputLimitSubtitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl input-field text-xs text-white">
@@ -637,23 +650,23 @@
   </div>
 
   <!-- 2. ADD CATEGORY MODAL -->
-  <div id="addCategoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+  <div id="addCategoryModal" role="dialog" aria-modal="true" aria-labelledby="addCategoryModalTitle" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="panel-card rounded-3xl p-6 w-full max-w-md border border-purple-500/40 space-y-4 bg-[#140F26] shadow-2xl">
       <div class="flex items-start justify-between">
-        <h4 class="text-sm font-bold text-white font-serif">Add Custom Service Category</h4>
-        <button onclick="closeAddCategoryModal()" class="text-slate-400 hover:text-white">✕</button>
+        <h4 id="addCategoryModalTitle" class="text-sm font-bold text-white font-serif">Add Custom Service Category</h4>
+        <button onclick="closeAddCategoryModal()" aria-label="Close Add Category Modal" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <form onsubmit="handleConfirmAddCategory(event)" class="space-y-3">
         <div>
-          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Category Name</label>
+          <label for="inputCategoryName" class="block text-[11px] text-purple-300 font-semibold mb-1">Category Name</label>
           <input id="inputCategoryName" type="text" placeholder="e.g. Mixology & Craft Cocktails" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white" required>
         </div>
         <div>
-          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Scope / Deliverables Note</label>
+          <label for="inputCategoryNotes" class="block text-[11px] text-purple-300 font-semibold mb-1">Scope / Deliverables Note</label>
           <input id="inputCategoryNotes" type="text" placeholder="e.g. Bespoke bar setup with 3 signature drinks" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white">
         </div>
         <div>
-          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Planned Allocation Amount (<span class="currSymbol">₹</span>)</label>
+          <label for="inputCategoryAmount" class="block text-[11px] text-purple-300 font-semibold mb-1">Planned Allocation Amount (<span class="currSymbol">₹</span>)</label>
           <input id="inputCategoryAmount" type="number" placeholder="50000" class="w-full px-3 py-2 rounded-xl input-field text-xs font-mono text-white" required>
         </div>
         <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
@@ -665,19 +678,19 @@
   </div>
 
   <!-- 3. ADD VENDOR MODAL -->
-  <div id="addVendorModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+  <div id="addVendorModal" role="dialog" aria-modal="true" aria-labelledby="addVendorModalTitle" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="panel-card rounded-3xl p-6 w-full max-w-md border border-purple-500/40 space-y-4 bg-[#140F26] shadow-2xl">
       <div class="flex items-start justify-between">
-        <h4 class="text-sm font-bold text-white font-serif">Add New Supplier / Vendor</h4>
-        <button onclick="closeAddVendorModal()" class="text-slate-400 hover:text-white">✕</button>
+        <h4 id="addVendorModalTitle" class="text-sm font-bold text-white font-serif">Add New Supplier / Vendor</h4>
+        <button onclick="closeAddVendorModal()" aria-label="Close Add Supplier Modal" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <form onsubmit="handleConfirmAddVendor(event)" class="space-y-3">
         <div>
-          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Supplier Company / Brand Name</label>
+          <label for="inputVendorName" class="block text-[11px] text-purple-300 font-semibold mb-1">Supplier Company / Brand Name</label>
           <input id="inputVendorName" type="text" placeholder="e.g. Prism Light & Sound Production" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white" required>
         </div>
         <div>
-          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Category</label>
+          <label for="selectVendorCategory" class="block text-[11px] text-purple-300 font-semibold mb-1">Category</label>
           <select id="selectVendorCategory" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white">
             <option value="Venue">Venue</option>
             <option value="Catering">Catering</option>
@@ -688,11 +701,11 @@
           </select>
         </div>
         <div>
-          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Estimated Quote (<span class="currSymbol">₹</span>)</label>
+          <label for="inputVendorEstimate" class="block text-[11px] text-purple-300 font-semibold mb-1">Estimated Quote (<span class="currSymbol">₹</span>)</label>
           <input id="inputVendorEstimate" type="number" placeholder="75000" class="w-full px-3 py-2 rounded-xl input-field text-xs font-mono text-white">
         </div>
         <div>
-          <label class="block text-[11px] text-purple-300 font-semibold mb-1">Contact Email / Phone</label>
+          <label for="inputVendorContact" class="block text-[11px] text-purple-300 font-semibold mb-1">Contact Email / Phone</label>
           <input id="inputVendorContact" type="text" placeholder="concierge@supplier.com" class="w-full px-3 py-2 rounded-xl input-field text-xs text-white">
         </div>
         <div class="flex justify-end gap-2 pt-2 border-t border-white/10">
@@ -899,7 +912,7 @@
       // Render Chromatic Palette
       const paletteGrid = document.getElementById('paletteGrid');
       paletteGrid.innerHTML = state.theme.colorPalette.map(c => `
-        <div onclick="copyHex('${c.hex}')" class="group cursor-pointer p-3 rounded-2xl bg-black/40 border border-white/10 hover:border-pink-500/50 transition-all flex flex-col justify-between space-y-2">
+        <div onclick="copyHex('${c.hex}')" onkeydown="if(event.key==='Enter'||event.key===' ')copyHex('${c.hex}')" role="button" tabindex="0" aria-label="Copy ${c.name} hex color code ${c.hex}" class="group cursor-pointer p-3 rounded-2xl bg-black/40 border border-white/10 hover:border-pink-500/50 transition-all flex flex-col justify-between space-y-2">
           <div class="h-16 w-full rounded-xl shadow-inner border border-white/10 transition-transform group-hover:scale-[1.02]" style="background-color: ${c.hex};"></div>
           <div>
             <div class="text-xs font-bold text-white truncate">${c.name}</div>
@@ -947,14 +960,14 @@
             </td>
             <td class="py-3 px-3 text-center font-mono text-purple-300 font-bold">${cat.share}%</td>
             <td class="py-3 px-3 font-mono font-bold text-white">
-              <input type="number" onchange="updateCatAlloc('${cat.id}', this.value)" value="${cat.allocated}" class="w-24 px-2 py-1 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-white text-right focus:border-purple-500">
+              <input type="number" aria-label="Planned budget allocation for ${cat.name}" onchange="updateCatAlloc('${cat.id}', this.value)" value="${cat.allocated}" class="w-24 px-2 py-1 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-white text-right focus:border-purple-500">
             </td>
             <td class="py-3 px-3 font-mono font-bold text-emerald-400">
-              <input type="number" onchange="updateCatSpent('${cat.id}', this.value)" value="${cat.spent}" class="w-24 px-2 py-1 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-emerald-400 text-right focus:border-purple-500">
+              <input type="number" aria-label="Actual paid spent for ${cat.name}" onchange="updateCatSpent('${cat.id}', this.value)" value="${cat.spent}" class="w-24 px-2 py-1 rounded-lg bg-black/50 border border-white/10 text-xs font-mono text-emerald-400 text-right focus:border-purple-500">
             </td>
             <td class="py-3 px-3">${statusBadge}</td>
             <td class="py-3 px-3 text-right">
-              <button onclick="deleteCategory('${cat.id}')" class="text-rose-400 hover:text-rose-300 p-1 rounded-lg hover:bg-rose-500/10 transition-all">
+              <button onclick="deleteCategory('${cat.id}')" aria-label="Delete category ${cat.name}" class="text-rose-400 hover:text-rose-300 p-1 rounded-lg hover:bg-rose-500/10 transition-all">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </td>
@@ -970,7 +983,7 @@
       tContainer.innerHTML = state.timeline.map(item => `
         <div class="p-3.5 rounded-2xl panel-card border ${item.completed ? 'border-emerald-500/30 bg-emerald-950/10' : 'border-white/10'} flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <button onclick="toggleTask('${item.id}')" class="w-6 h-6 rounded-lg flex items-center justify-center border transition-all ${item.completed ? 'bg-emerald-500 border-emerald-400 text-white' : 'border-purple-400/40 hover:border-pink-400 text-transparent'}">
+            <button onclick="toggleTask('${item.id}')" role="checkbox" aria-checked="${item.completed}" aria-label="${item.completed ? 'Mark incomplete' : 'Mark complete'}: ${item.task}" class="w-6 h-6 rounded-lg flex items-center justify-center border transition-all ${item.completed ? 'bg-emerald-500 border-emerald-400 text-white' : 'border-purple-400/40 hover:border-pink-400 text-transparent'}">
               <i data-lucide="check" class="w-3.5 h-3.5"></i>
             </button>
             <div>
@@ -978,7 +991,7 @@
               <div class="text-[10px] text-pink-300 font-mono uppercase tracking-wider">${item.phase}</div>
             </div>
           </div>
-          <button onclick="deleteTask('${item.id}')" class="text-slate-500 hover:text-rose-400 p-1">
+          <button onclick="deleteTask('${item.id}')" aria-label="Delete task: ${item.task}" class="text-slate-500 hover:text-rose-400 p-1">
             <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
           </button>
         </div>
@@ -999,7 +1012,7 @@
             <div class="space-y-1.5">
               <div class="flex items-start justify-between">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-purple-300/60">${v.category}</span>
-                <select onchange="updateVendorStatus('${v.id}', this.value)" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusColors[v.status] || ''} bg-black/40 focus:outline-none">
+                <select onchange="updateVendorStatus('${v.id}', this.value)" aria-label="Status for ${v.name}" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusColors[v.status] || ''} bg-black/40 focus:outline-none">
                   <option value="Not Started" ${v.status === 'Not Started' ? 'selected' : ''}>Not Started</option>
                   <option value="In Discussion" ${v.status === 'In Discussion' ? 'selected' : ''}>In Discussion</option>
                   <option value="Booked" ${v.status === 'Booked' ? 'selected' : ''}>Booked</option>
@@ -1016,10 +1029,10 @@
                 <span class="font-mono font-bold text-white">${formatMoney(v.quote)}</span>
               </div>
               <div class="flex items-center gap-2">
-                <a href="mailto:${v.contact}" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-purple-300 transition-all">
+                <a href="mailto:${v.contact}" aria-label="Send email to supplier ${v.name}" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-purple-300 transition-all">
                   <i data-lucide="mail" class="w-3.5 h-3.5"></i>
                 </a>
-                <button onclick="deleteVendor('${v.id}')" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-all">
+                <button onclick="deleteVendor('${v.id}')" aria-label="Delete supplier ${v.name}" class="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-all">
                   <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
@@ -1046,7 +1059,7 @@
             <td class="py-3 px-4 font-bold text-white text-xs">${g.name}</td>
             <td class="py-3 px-3 text-purple-300/70 font-mono text-[11px]">${g.email}</td>
             <td class="py-3 px-3">
-              <select onchange="updateGuestRsvp('${g.id}', this.value)" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${rBadge} bg-black/40 focus:outline-none">
+              <select onchange="updateGuestRsvp('${g.id}', this.value)" aria-label="RSVP status for ${g.name}" class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${rBadge} bg-black/40 focus:outline-none">
                 <option value="Confirmed" ${g.rsvp === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
                 <option value="Pending" ${g.rsvp === 'Pending' ? 'selected' : ''}>Pending</option>
                 <option value="Declined" ${g.rsvp === 'Declined' ? 'selected' : ''}>Declined</option>
@@ -1056,7 +1069,7 @@
               <span class="text-[11px] px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300">${g.dietary}</span>
             </td>
             <td class="py-3 px-3 text-right">
-              <button onclick="deleteGuest('${g.id}')" class="text-rose-400 hover:text-rose-300 p-1">
+              <button onclick="deleteGuest('${g.id}')" aria-label="Delete attendee ${g.name}" class="text-rose-400 hover:text-rose-300 p-1">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </td>
